@@ -1,0 +1,27 @@
+链接：https://blog.csdn.net/u013100581/article/details/77040190
+var json = {
+    pageIndex: '1',
+    pageSize: '10',
+    data: [
+        {'a':'1','b':'2','c':'23'},
+        {'a':'11','b':'22','c':'43'},
+        {'a':'3','b':'24','c':'31'},
+        {'a':'13','b':'32','c':'33'}
+    ]
+};
+/*对json进行排序
+* array 数组
+* key 键
+* 顺序 asc 升序，desc 倒序
+*/
+function sortJson(array, key, order) {
+    return array.sort(function(index, next) {
+        var a = index[key]; var b = next[key];
+        if("asc" == order){
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        }else{
+            return ((a > b) ? -1 : ((a < b) ? 1 : 0));
+        }
+    });
+}
+sortJson(json.data,'c','asc');

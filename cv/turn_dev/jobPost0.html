@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    function loadXMLDoc() {
+      // var job = {}
+      // var inputNodes = document.getElementsByClassName('form-control');
+      // for(var i=0;i<inputNodes.length;i++){
+      //   var key = inputNodes[i].id;
+      //   var value = inputNodes[i].value;
+      //   job[key] = value;
+      // }
+
+      var url = "https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/job";
+
+      console.log(url);
+      var job = {}
+      job["s3_input"] = "s3://vaas-03-turner-dev/To Dao Lab";
+      job["edl_input"] = "DS007823.edl";
+      job["src_input"] = "DS007823.mxf";
+      job["opening_input"] = "CN_Opening_Bumper_HD.mxf";
+      job["closing_input"] = "CN_Opening_Bumper_HD.mxf";
+      job["logo_input"] = "CN_side_by_side_logo_bug_HD.png";
+      job["s3_output"] = "s3://vaas-03-turner-dev/output/20190310/demo";
+      job["profile"] = "turner-edl-mp4-240p";
+      job["output"] = "DS007823.mp4";
+      console.log(job);
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          console.log(dataobj)
+        }
+      }
+      xmlhttp.open("POST", url, true);
+      xmlhttp.setRequestHeader("Content-Type", "application/json");
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send(JSON.stringify(job));
+    }
+  </script>
+  <style type="text/css">
+
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row" >
+      <div id="myDiv"  class="col-xs-12 col-sm-6 col-lg-3 col-md-4">
+        <form class="bs-example bs-example-form" role="form">
+          <div class="input-group">
+            <span class="input-group-addon">s3_input : </span>
+            <input type="text" class="form-control" id="s3_input">
+          </div><br />
+          <div class="input-group">
+            <span class="input-group-addon">edl_input : </span>
+            <input type="text" class="form-control" id="edl_input">
+          </div><br />
+          <div class="input-group">
+            <span class="input-group-addon">src_input : </span>
+            <input type="text" class="form-control" id="src_input">
+          </div><br />
+          <div class="input-group">
+            <span class="input-group-addon">opening_input : </span>
+            <input type="text" class="form-control" id="opening_input">
+          </div><br />
+          <div class="input-group">
+            <span class="input-group-addon">closing_input : </span>
+            <input type="text" class="form-control" id="closing_input">
+          </div><br />
+          <div class="input-group">
+            <span class="input-group-addon">logo_input : </span>
+            <input type="text" class="form-control" id="logo_input">
+          </div><br />
+          <div class="input-group">
+            <span class="input-group-addon">s3_output : </span>
+            <input type="text" class="form-control" id="s3_output">
+          </div><br />
+          <div class="input-group">
+            <span class="input-group-addon">profile : </span>
+            <input type="text" class="form-control" id="profile">
+          </div><br />
+          <div class="input-group">
+            <span class="input-group-addon">output : </span>
+            <input type="text" class="form-control" id="output">
+          </div><br />
+          <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default"  onclick="loadXMLDoc()">POST</button>
+             </div>
+           </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

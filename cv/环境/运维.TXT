@@ -1,0 +1,44 @@
+部署类：jenkins
+环境类：ansible
+监控类：ngios
+
+运维思想：
+	管理体系话
+	工作流程化
+	人员专业化
+	任务自动化：
+		环境定义自动化
+		部署自动化
+		监控自动化
+
+自动化：
+	自动化
+	易实现
+	跨平台
+	轻量级
+
+运维人员要求：
+	编程较弱
+	熟悉运维
+	算法较弱
+
+运维编程特点：
+	丰富的第三方库
+	学习成本低
+	跨平台
+	轻量级
+
+运维工具：salt    安装资料：http://blog.51cto.com/mbb97/2084530
+
+
+运维工具ansible安装：
+pip install ansible
+centos:yum install ansible
+ubuntu:
+apt-get install software-properties-common
+apt-add-repository ppa:ansible/ansible
+apt-get update
+apt-get isntall ansible
+
+ansible配置文件：
+参考https://raw.github.com/ansible/ansible/devel/examples/ansible.cfg    到 /etc/ansible

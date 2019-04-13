@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" /> -->
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    var url = "https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/bin";
+    window.onload=function(){
+      var urls = url;
+      loadXMLDoc(urls,loadProfile);
+    }
+    // setInterval(loadXMLDoc, 3000, url, loadProfile);
+    //load ajax method get
+    function loadXMLDoc(url,callback) {
+      var names = url.split("https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/bin")[1];
+
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          if(names == "" || names == null || names == undefined){
+            callback(dataobj);
+          }else{
+            // callback(xmlhttp.responseText);
+            callback(dataobj);
+          }
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send();
+    }
+    function loadProfile(dataobj){
+      var str="";
+      str+="<div><table class=\"table table-hover table-bordered\"><thead><tr><th>Profile Name</th></tr></thead><tbody>";
+      for(var i = 0;i < dataobj.profile.length;i++){
+        if(dataobj.profile[i].split(".")[1] == "bash"){
+          str+="<tr><td>"+"<div onclick=\"loadXMLDoc('"+url+"?name="+dataobj.profile[i].split(".")[0]+"',showJson)\">"+dataobj.profile[i].split(".")[0]+"</div></br />"+ "</td></tr>";
+        }
+        console.log(dataobj.profile[i]);
+      }
+      document.getElementById("myDiv").innerHTML = str;
+    }
+    function showJson(dataobj){
+      document.getElementById("jsonContent").innerHTML = "";
+      var str="";
+      str+="<div style=\"width:30%;\"><table class=\"table table-hover table-bordered\"><thead><tr><th>KEY</th><th>VALUE</th></tr></thead><tbody>";
+      for(var jsonKey in dataobj){
+        if(jsonKey == "errorCode" || jsonKey == "errorMessage" || jsonKey == "name "){
+          continue;
+        }
+        str+="<tr><td>"+jsonKey + "</td><td>" + dataobj[jsonKey] + "</td></tr>";
+      }
+      str+="</tbody></div>";
+      document.getElementById("jsonContent").innerHTML = str;
+    }
+    function addjsonfunc() {
+      var namesjson = document.getElementById("namejson").value;
+      var result = {};
+      if(namesjson == ""){
+        namesjson = "default";
+      }
+      result["name"] = namesjson;
+      var keyValDIV = document.getElementById("addJson");
+      console.log(keyValDIV.children.length);
+      for(var i = 0;i < keyValDIV.children.length;i++){
+        var keys = document.getElementById("jsonNameskey"+i).value;
+        var values = document.getElementById("jsonNameValue"+i).value;
+        result[keys] = values;
+      }
+      document.getElementById("addJson").innerHTML = "";
+      console.log(result);
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+        }
+      }
+      xmlhttp.open("PUT", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send(JSON.stringify(result));
+    }
+    var count = 0;
+    function addDiv(){
+
+      var newKEYdiv = document.createElement("div");
+      newKEYdiv.id = "newKEYdiv"+count;
+      newKEYdiv.innerHTML = "<label for=\"jsonName\">key : </label><input type=\"text\" id=\"jsonNameskey"+count+"\"><label for=\"jsonName\">value : </label><input type=\"text\" id=\"jsonNameValue"+count+"\"><button onclick=\"delKEYdiv(this)\">一</button>";
+      count++;
+      document.getElementById("addJson").appendChild(newKEYdiv);
+    }
+    function delKEYdiv(self){
+      // alert(self.parentNode.parentNode.id);
+      var parents = document.getElementById(self.parentNode.parentNode.id)
+      parents.removeChild(self.parentNode);
+      // self.parentnode.parentNode.removeChild(self.parentNode.id);
+    }
+  </script>
+  <style type="text/css">
+    a{
+      text-decoration: none;
+    }
+    #jsonContent{
+      margin-left:300px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+      <div class="jsonContents row" style="float:left;">
+        <div id="myDiv" style="float:left;height:300px;width:200px;"></div>
+        <div id="jsonContent"></div>
+      </div>
+      <div style="float:right;">
+        <label for="jsonName">Json Name : </label>
+        <input type="text" id="namejson">
+        <button type="button" onclick="addjsonfunc()">PUT</button>
+        <button type="button" onclick="addDiv()">Add key</button>
+        <button type="button"  style="opacity:0;">DEL</button>
+        <button style="opacity:0;">一</button>
+        <div id="addJson"></div>
+      </div>
+    </div>
+
+</body>
+
+</html>

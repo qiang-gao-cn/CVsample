@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+<!DOCTYPE html>
+<html>
+<head>
+  <title>test ajax</title>
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <style type="text/css">
+      .box{width:100%;min-height:100%;margin-bottom:20px;word-break: break-all;word-wrap: break-word;background:#353535;color:white;padding-top: 20px;padding-bottom: 20px;}
+      .float-left{float:left;}
+      /* [class*="col-"]{
+          margin-bottom: -99999px;
+          padding-bottom: 99999px;
+      }
+      .container-fluid{
+          overflow: hidden;
+      } */
+      .container-fluid {
+          display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;
+          flex-wrap: wrap;
+      }
+      .container-fluid > [class*='col-'] {
+          display: flex;
+          flex-direction: column;
+      }
+    </style>
+
+</head>
+<body style="background:#adadad;">
+<div class="container-fluid"  id="demo">
+</div>
+    <script>
+    setInterval(function(){
+		var xhttp;
+	  if(window.XMLHttpRequest){
+			 xhttp = new XMLHttpRequest();
+	  }else {
+	     xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  xhttp.onreadystatechange = function() {
+	  if (this.readyState == 4 && this.status == 200) {
+		console.log(this.responseText);
+		var job = JSON.parse(this.responseText);
+	  var demoObj = document.getElementById("demo");
+		var str= "";
+		for(var i=0;i<job.JobList.length;i++){
+            var boxid = "box"+i;
+            //alert(boxid);
+      			str+="<div "+"id='"+boxid+"'"+"class=' float-left box border  rounded float-left col-xs-12 col-sm-6 col-md-4 col-lg-3'>";
+            str+="<div>";
+            str+="<img src='" + job.JobList[i].Preview +"'";
+            str+="onerror=\"this.onerror=\'\'\;src=\'colorbar.png\'\" width=\"100%\">";
+            str+= "</br>";
+            str+="</div>";
+            str+="<div>";
+            str+="isPimary : "+job.JobList[i].isPimary;
+            str+= "</br>";
+            str+="LastUpdate : "+job.JobList[i].LastUpdate;
+            str+= "</br>";
+	          str+="RoomId : "+job.JobList[i].roomId;
+		        str+= "</br>";
+	          str+="EventId : "+job.JobList[i].eventId;
+		        str+= "</br>";
+	          str+="Status : "+job.JobList[i].Status;
+		        str+= "</br>";
+			      str+="</div>";
+			      str+="</div>";
+		     }
+    demoObj.innerHTML=str;
+	    }
+	  };
+	  xhttp.open("GET", "https://tfrba4foa0.execute-api.ap-southeast-1.amazonaws.com/default/api/listjobs", true);
+	  xhttp.setRequestHeader("x-api-key", "nrkzi8zU8c6ICLqeROQZd7hcCaIv6shy9KrGsDZY");
+  	xhttp.send();
+  }, 5000);
+</script>
+</body>
+</html>

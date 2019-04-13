@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+		<title>M3U8Rec Service Installation Tutorial</title>
+		<style>
+      *{
+        list-style-type:none;
+      }
+			img {
+			    max-width: 900px;
+			}
+		</style>
+    <script type="text/javascript">
+      window.onload=function(){
+        var menuobj = document.getElementById("menu");
+        var  h4ele = document.getElementsByTagName("h4");
+        for(var i = 0;i < h4ele.length; i++){
+          h4ele[i].innerHTML="<a name="+i+">" + h4ele[i].innerHTML + "</a>";
+        }
+        var  ulele = document.getElementsByTagName("ul");
+        for(var i = 0;i < ulele.length; i++){
+          ulele[i].innerHTML="<a href=#"+i+">" + ulele[i].innerHTML + "</a>";
+        }
+      }
+      function pageScroll(){
+          //把内容滚动指定的像素数（第一个参数是向右滚动的像素数，第二个参数是向下滚动的像素数）
+          window.scrollBy(0,-100);
+          //延时递归调用，模拟滚动向上效果
+          scrolldelay = setTimeout('pageScroll()',0);
+          //获取scrollTop值，声明了DTD的标准网页取document.documentElement.scrollTop，否则取document.body.scrollTop；因为二者只有一个会生效，另一个就恒为0，所以取和值可以得到网页的真正的scrollTop值
+          var sTop=document.documentElement.scrollTop+document.body.scrollTop;
+          //判断当页面到达顶部，取消延时代码（否则页面滚动到顶部会无法再向下正常浏览页面）
+          if(sTop==0) clearTimeout(scrolldelay);
+      }
+    </script>
+	</head>
+<body>
+
+<a name="top"><h1>M3U8Rec Service Installation Tutorial</h1></a>
+<a onclick="pageScroll()"><div id="top" style="position:fixed;right:0px;bottom:0px;"><img src="top.png"></div></a>
+<div id="menu">
+  <ul><li>AWS CLI tool and BASH env for this tutorial</li></ul>
+  <ul><li>Get latest package</li></ul>
+  <ul><li>We are going to use setup.sh</li></ul>
+  <ul><li>In order to run api setup script, we need to prepare the following info first.</li></ul>
+  <ul><li>Create a policy for installation, go to aws web console | IAM | Policies, click "Create policy".</li></ul>
+  <ul><li>click "JSON" tab to edit json of this policy directly.</li></ul>
+  <ul><li>click "JSON" tab to edit json of this policy directly.</li></ul>
+  <ul><li>copy following to replace. preview this policy</li></ul>
+  <ul><li>Create a role for lambda, goto web console | IAM | Roles</li></ul>
+  <ul><li>Click create role, choose "AWS service" as trusted entity, choose "Lambda" servie that will use this role </li></ul>
+  <ul><li>Search and choose "AWSLambdaBasicExecuionRole"</li></ul>
+  <ul><li>leave tag default, then finish role for lambda, Remember name of this role. </li></ul>
+  <ul><li>edit "Trust Replationship" of the role we just created. </li></ul>
+  <ul><li>Add "apigateway.amazonaws.com" so that apigateway could invoke lambda. </li></ul>
+  <ul><li>Next we create IAM user, go to web console | IAM | Users, click "Add user". </li></ul>
+  <ul><li>Give a username, and Tick "Programmtic access". </li></ul>
+  <ul><li>Click "next: permission", search the policy we've created for installation. </li></ul>
+  <ul><li>Review for mistake, and click "create user". </li></ul>
+  <ul><li>Log down the ID/Key, and Download csv file, keep it in a safe place. </li></ul>
+  <ul><li>Create a key pair for SSH login to EC2.  Go to web console | EC2 | key pair</li></ul>
+  <ul><li>Click "Create Key Pair", give a name, key name will be used by script to launch EC2 instance.</li></ul>
+  <ul><li>Choose or create a "Security Group" for EC2. Go to web console | EC2 | "Security Group", find or create one, the id will be used by installation script.</li></ul>
+  <ul><li>Get latest lambda source code, to go bitbucket repository page | Download m3u8rec_api.v1_0_1.20181126.zip.</li></ul>
+  <ul><li>mkdir a folder called "stage", save m3u8rec_api.v1_0_1.20181126.zip to that folder.</li></ul>
+  <ul><li>Create a file called "VaaSEnv.sh", complete var info, and save to "stage" folder too. Pls use this "ami-018cd0754e0303f93"</li></ul>
+  <ul><li>All ready, now run "./setup.bash install_aws_api"</li></ul>
+  <ul><li>Go to web console to check, it will create one S3, two SQS, one SNS, one API Gateway, one lambda.</li></ul>
+  <ul><li>Go to web console to Lambda, find the api "end_point" and "api key".</li></ul>
+  <ul><li>Do a quick test with curl.</li></ul>
+  <ul><li>run "./setup.bash launch_ec2". It will launch one primary and one backup EC2 instance with given AMI. Pls use this "ami-018cd0754e0303f93"</li></ul>
+  <ul><li>Go to web console, check EC2 status</li></ul>
+  <ul><li>At last step of installation, update policy for production. run "./setup.bash show_prod_policy" will show an policy sample</li></ul>
+  <ul><li>copy it and update policy in AWS web console | IAM | policy. Now this IAM user have access only for M3U8Rec service</li></ul>
+  <ul><li>Open "postman", import api dump file "TVB-BigBigChannel-M3U8Rec.postman_collection.json" from git source</li></ul>
+  <ul><li>run "./setup.bash show_postman_env" will show env setting for postman app. import it to postman</li></ul>
+  <ul><li>Run a simple test with postman</li></ul>
+</div>
+
+<h4>AWS CLI tool and BASH env for this tutorial</h4>
+<img src="00.png">
+
+<h4>Get latest package</h4>
+<img src="01.png">
+
+<h4>We are going to use setup.sh</h4>
+<img src="02.png">
+
+<h4>In order to run api setup script, we need to prepare the following info first.</h4>
+<img src="03.png">
+
+<h4>Create a policy for installation, go to aws web console | IAM | Policies, click "Create policy".</h4>
+<img src="04.png">
+
+<h4>click "JSON" tab to edit json of this policy directly.</h4>
+<img src="05.png">
+
+<h4>click "JSON" tab to edit json of this policy directly.</h4>
+<img src="05.png">
+
+<h4>copy following to replace. preview this policy</h4>
+<pre>
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VaaSPolicy00",
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "VaaSPolicy10",
+            "Effect": "Allow",
+            "Action": "sns:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "VaaSPolicy20",
+            "Effect": "Allow",
+            "Action": "sqs:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "VaaSPolicy30",
+            "Effect": "Allow",
+            "Action": "apigateway:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "VaaSPolicy40",
+            "Effect": "Allow",
+            "Action": "lambda:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "VaaSPolicy50",
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "*"
+        },
+        {
+            "Sid": "VaaSPolicy60",
+            "Effect": "Allow",
+            "Action": "ec2:*",
+            "Resource": "*"
+        }
+    ]
+}
+</pre>
+<img src="06.png">
+
+<h4>Create a role for lambda, goto web console | IAM | Roles</h4>
+<img src="07.png">
+
+<h4>Click create role, choose "AWS service" as trusted entity, choose "Lambda" servie that will use this role </h4>
+<img src="08.png">
+
+<h4>Search and choose "AWSLambdaBasicExecuionRole"</h4>
+<img src="09.png">
+
+<h4>leave tag default, then finish role for lambda, Remember name of this role. </h4>
+<img src="10.png">
+
+<h4>edit "Trust Replationship" of the role we just created. </h4>
+<img src="11.png">
+
+<h4>Add "apigateway.amazonaws.com" so that apigateway could invoke lambda. </h4>
+<pre>
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "Service": [
+            "apigateway.amazonaws.com",
+            "lambda.amazonaws.com"
+          ]
+        },
+        "Action": "sts:AssumeRole"
+      }
+    ]
+  }
+</pre>
+<img src="12.png">
+
+<h4>Next we create IAM user, go to web console | IAM | Users, click "Add user". </h4>
+<img src="13.png">
+
+<h4>Give a username, and Tick "Programmtic access". </h4>
+<img src="14.png">
+
+<h4>Click "next: permission", search the policy we've created for installation. </h4>
+<img src="15.png">
+
+<h4>Review for mistake, and click "create user". </h4>
+<img src="16.png">
+
+<h4>Log down the ID/Key, and Download csv file, keep it in a safe place. </h4>
+<img src="17.png">
+
+<h4>Create a key pair for SSH login to EC2.  Go to web console | EC2 | key pair</h4>
+<img src="18.png">
+
+<h4>Click "Create Key Pair", give a name, key name will be used by script to launch EC2 instance.</h4>
+<img src="19.png">
+
+<h4>Choose or create a "Security Group" for EC2. Go to web console | EC2 | "Security Group", find or create one, the id will be used by installation script.</h4>
+<img src="20.png">
+
+<h4>Get latest lambda source code, to go bitbucket repository page | Download m3u8rec_api.v1_0_1.20181126.zip.</h4>
+<img src="21.png">
+
+<h4>mkdir a folder called "stage", save m3u8rec_api.v1_0_1.20181126.zip to that folder.</h4>
+<img src="22.png">
+
+<h4>Create a file called "VaaSEnv.sh", complete var info, and save to "stage" folder too. Pls use this "ami-018cd0754e0303f93"</h4>
+<img src="23.png">
+
+<h4>All ready, now run "./setup.bash install_aws_api"</h4>
+<img src="24.png">
+
+<h4>Go to web console to check, it will create one S3, two SQS, one SNS, one API Gateway, one lambda.</h4>
+<img src="25.png"><br>
+<img src="26.png"><br>
+<img src="27.png"><br>
+
+<h4>Go to web console to Lambda, find the api "end_point" and "api key".</h4>
+<img src="28.png">
+
+<h4>Do a quick test with curl.</h4>
+<img src="29.png">
+
+<h4>run "./setup.bash launch_ec2". It will launch one primary and one backup EC2 instance with given AMI. Pls use this "ami-018cd0754e0303f93"</h4>
+<img src="30.png">
+
+<h4>Go to web console, check EC2 status</h4>
+<img src="31.png">
+
+<h4>At last step of installation, update policy for production. run "./setup.bash show_prod_policy" will show an policy sample</h4>
+<img src="32.png">
+
+<h4>copy it and update policy in AWS web console | IAM | policy. Now this IAM user have access only for M3U8Rec service</h4>
+<img src="33.png">
+
+<h4>Open "postman", import api dump file "TVB-BigBigChannel-M3U8Rec.postman_collection.json" from git source</h4>
+<img src="34.png">
+
+<h4>run "./setup.bash show_postman_env" will show env setting for postman app. import it to postman</h4>
+<img src="35.png">
+
+<h4>Run a simple test with postman</h4>
+<img src="36.png"><br>
+<img src="37.png"><br>
+<img src="38.png"><br>
+<img src="39.png"><br>
+</body>
+</html>

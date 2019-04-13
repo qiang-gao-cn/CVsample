@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script type="text/javascript">
+  var arr = [1,2,3,4];
+  var obj = [];
+  var obj1 = [];
+  for(var i=0;i<arr.length;i++){
+    if(arr[i]%2 == 0){
+        obj[i] = arr[i];
+    }
+    if(arr[i]%2 == 1){
+      obj1[i] = arr[i];
+    }
+  }
+
+  myFunction(obj);
+  myFunction(obj1);
+  //去除数组中的空值
+  function myFunction(array){
+    for(var i = 0 ;i<array.length;i++)
+      {
+          if(array[i] == " " || array[i] == null || typeof(array[i]) == "undefined")
+          {
+                   array.splice(i,1);
+                   i= i-1;
+          }
+      }
+      return array;
+  }
+  console.log(obj);
+  console.log(obj1);
+  //合并obj和obj1
+  var c = obj.concat(obj1);
+  console.log(c);
+
+  </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
+<!-- var arr = [1,2,3,4];
+var obj = [];
+var obj1 = [];
+for(var i=0;i<arr.length;i++){
+  if(arr[i]%2 == 0){
+      obj[i] = arr[i];
+  }
+  if(arr[i]%2 == 1){
+    obj1[i] = arr[i];
+  }
+}
+myFunction(obj);
+myFunction(obj1);
+function myFunction(array){
+  for(var i = 0 ;i<array.length;i++)
+    {
+        if(array[i] == " " || array[i] == null || typeof(array[i]) == "undefined")
+        {
+                 array.splice(i,1);
+                 i= i-1;
+        }
+    }
+    return array;
+}
+console.log(obj);
+console.log(obj1);
+var c = obj.concat(obj1);
+console.log(c); -->

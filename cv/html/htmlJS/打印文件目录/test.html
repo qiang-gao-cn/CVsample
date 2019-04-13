@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script language="JavaScript">
+  function init(){
+    try {
+      var fso=new ActiveXObject("Scripting.FileSystemObject");
+    } catch (e) {
+      alert("no ----");
+    } finally {
+      var s=fso.GetFolder("\\vagrant\\");
+      var fn=new Enumerator(s.files);
+      var s="";
+      for(;!fn.atEnd();fn.moveNext()){
+				alert(fn.item());
+        	s=s+fn.item()+"\n";
+      }
+    }
+      alert(s);
+  }
+	</script>
+	<body>
+    <button type="button" onclick="init()">test</button>
+	</body>
+</html>

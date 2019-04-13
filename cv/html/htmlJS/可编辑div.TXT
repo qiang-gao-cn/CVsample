@@ -1,0 +1,7 @@
+DIV获取焦点（两种方法）：
+	需添加tabindex="0"或者contenteditable="true"属性
+	①：设置div为可编辑状态，则可点击获取焦点，同时div的内容也是可以编辑的；如：
+	<div  contenteditable="true">11111111111111</div>
+	②：设置div的tabindex，此时div的内容是不可编辑的；如：
+	<div  tabindex="0">11111111111111</div>
+	PS:设置tabindex属性，按键盘Tab键可让其获取焦点，其中tabindex的值越小在tab键切换的时候就会首先聚焦。

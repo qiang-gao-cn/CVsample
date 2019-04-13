@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var data = {"key":"value","key1":"value1"};
+      data = JSON.stringify(data);
+      const blob = new Blob([data], {type: "text/plain"})
+      const link = document.createElement("a")
+      link.href = URL.createObjectURL(blob)
+      link.download = "filename.csv" // 这里填保存成的文件名
+      link.click()
+      URL.revokeObjectURL(link.href)
+    </script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+1:JSON嵌套在输出时比较麻烦
+var data=xmlhttp.responseText;
+dataObj=JSON.parse(data);
+console.log(dataObj.Service);
+for (var objs in dataObj) {
+  console.log(objs);
+  console.log(dataObj[objs]);
+  if(dataObj[objs] == "[object Object]"){
+    for(var obj in dataObj[objs][0]){
+      console.log(objs+":"+obj);
+    }
+  }
+2:

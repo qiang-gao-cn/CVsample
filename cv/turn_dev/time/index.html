@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Turner UI</title>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript">
+  var url = "https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/";
+  var profileUrl = url+"profile";
+  var callbackUrl = url+"bin";
+  window.onload=function(){
+    loadJob();
+    loadXMLDocJOB();
+    loadXMLDocs(profileUrl,loadProfile);
+    loadXMLDocs(callbackUrl,loadProfile);
+  }
+    function loadJob(){
+      var job0 = {}
+      job0["profile"] = "turner-edl-mp4-240p";
+      job0["output"] = "240p_DS007823.mp4";
+      var job3 = {}
+      job3["profile"] = "turner-edl-mp4-1080p";
+      job3["output"] = "1080p_DS007823.mp4";
+      var job1 = {}
+      job1["profile"] = "turner-edl-mp4-480p";
+      job1["output"] = "480p_DS007823.mp4";
+      var job2 = {}
+      job2["profile"] = "turner-edl-mp4-720p";
+      job2["output"] = "720p_DS007823.mp4";
+      var job4 = {}
+      job4["profile"] = "turner-edl-mxf-xdcam-50m";
+      job4["output"] = "50m_DS007823.mp4";
+
+      var str="";
+      for(var i = 0;i < 5;i++){
+        str += "<div id=\"job"+i+"\" class=\"col-xs-12 col-sm-6 col-lg-2 col-md-3\">";
+        var job = eval("("+"job"+i+")");
+        str+="<h3>"+job["profile"]+"</h3>";
+        for(var key in job){
+          str+= "<div class=\"control-group panel panel-primary\"><div class=\"panel-heading\"><label class=\"panel-title control-label\" for=\""+key+"\">"+key+" : </label></div><div class=\"panel-body controls\"><input type=\"text\" class=\"form-control\" id="+key+i+" value=\""+job[key]+"\"></div></div>"
+        }
+        str+="</div>";
+      }
+
+      document.getElementById('formdiv').innerHTML = str;
+    }
+    function getJob(){
+      for(var i = 0;i < 5;i++){
+        var job = {};
+        var CommonPart = document.getElementById("CommonPart");
+        for(var k = 1;k < CommonPart.children.length;k++){
+          var key = CommonPart.children[k].children[1].children[0].id;
+          var value = CommonPart.children[k].children[1].children[0].value;
+          job[key] = value;
+        }
+        var inputParentNodes = document.getElementById("job"+i);
+        for(var j = 1;j < inputParentNodes.children.length;j++){
+          var key = (inputParentNodes.children[j].children[1].children[0].id).split(i)[0];
+          var value = inputParentNodes.children[j].children[1].children[0].value;
+          job[key] = value;
+        }
+        loadXMLDoc(job,i);
+      }
+    }
+    function loadXMLDoc(job,i) {
+      var url = "https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/job";
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          if(i == 4){
+            alert("Create success");
+          }
+        }
+      }
+      xmlhttp.open("POST", url, true);
+      xmlhttp.setRequestHeader("Content-Type", "application/json");
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send(JSON.stringify(job));
+    }
+    function loadXMLDocJOB() {
+      var url = " https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/job";
+      var jobContent = [
+      "JobID","profile","speed","progress","status","input","output","video_height","video_width",
+      "video_bitrate","video_codec","audio_bitrate","audio_codec","closing_input","src_input",
+      "s3_input","s3_output","duration","edl_input","end_cb","format","ini_cb","logo_input",
+      "opening_input","output_time","LastUpdate"];
+
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          //创建数据表格
+          var str = "";
+
+          str += "<table  summary=\"user infomation table\" id=\"tableSort\" class=\"sortable table table-hover table-striped table-bordered\"><thead><tr>";
+          for(var i = 0; i < jobContent.length;i++){
+              str += "<th  onclick=\"$.sortTable.sort('tableSort',"+i+")\" style=\"cursor: pointer;\">"+jobContent[i]+"</th>";
+          }
+          str += "</tr></thead><tbody>";
+          for (var i = 0; i < dataobj.items.length; i++) {
+            str += "<tr>";
+            for(var j = 0; j < jobContent.length;j++){
+              if(dataobj.items[i][jobContent[j]] == "" || dataobj.items[i][jobContent[j]] == "null" || dataobj.items[i][jobContent[j]] == undefined){
+                dataobj.items[i][jobContent[j]] = "N/A";
+              }
+              str += "<td>" + dataobj.items[i][jobContent[j]] + "</td>";
+            }
+            str += "</tr>";
+          }
+          str += "</tbody></table>";
+          document.getElementById("myDiv").innerHTML = str;
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send();
+    }
+    function loadXMLDocs(urls,callback,urlname) {
+      var urlname = urls.split(url)[1];
+      if(urlname == "profile"){
+        var names = url.split("https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/profile")[1];
+      }
+      if(urlname == "bin"){
+        var names = url.split("https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/bin")[1];
+      }
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          if(names == "" || names == null || names == undefined){
+            callback(dataobj,urlname);
+          }else{
+            // callback(xmlhttp.responseText);
+            callback(dataobj,urlname);
+          }
+        }
+      }
+      xmlhttp.open("GET", urls, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send();
+    }
+    function loadProfile(dataobj,urlname){
+      var str="";
+      if(urlname == "profile"){
+        var url = profileUrl;
+        str+="<div><table id=\"profilesTitle\" class=\"table text-nowrap  table-hover table-bordered\"><thead><tr><th>Profile Name</th></tr></thead><tbody>";
+      }
+      if(urlname == "bin"){
+        var url = callbackUrl;
+        str+="<div><table id=\"callbackTitle\" class=\"table text-nowrap  table-hover table-bordered\"><thead><tr><th>Callback Name</th></tr></thead><tbody>";
+      }
+      for(var i = 0;i < dataobj.profile.length;i++){
+        if(urlname == "profile"){
+          str+="<tr><td>"+"<div onclick=\"loadXMLDocs('"+url+"?name="+dataobj.profile[i].split(".")[0]+"',showProfileJson)\">"+dataobj.profile[i].split(".")[0]+"</div></br />"+ "</td></tr>";
+        }
+        if(urlname == "bin"){
+          if(dataobj.profile[i].split(".")[1] == "bash"){
+            if(dataobj.profile[i].split(".")[0] == "test" || dataobj.profile[i].split(".")[0] == "default"){
+              continue;
+            }
+            var profilesname = dataobj.profile[i].split(".")[0];
+            if(profilesname == "_cb_turner_edl_demo"){
+              var profilesname = "ini_cb_turner_edl_demo";
+            }
+            str+="<tr><td>"+"<div onclick=\"loadXMLDocs('"+url+"?name="+profilesname+"',showCallbackJson)\">"+profilesname+"</div></br />"+ "</td></tr>";
+          }
+        }
+      }
+      if(urlname == "profile"){
+        document.getElementById("profileDiv").innerHTML = str;
+      }
+      if(urlname == "bin"){
+        document.getElementById("callbackDiv").innerHTML = str;
+      }
+    }
+
+    function showProfileJson(dataobj){
+      document.getElementById("profileJsonContent").innerHTML = "";
+      var str="";
+      str+="<label for=\"jsonName\">Profile Name : </label><input type=\"text\" id=\"Profilenamejson\">";
+      str+="<button type=\"button\" onclick=\"addjsonfunc('Profilenamejson')\">PUT</button>";
+      str+="<div><table  id=\"profilesContent\" class=\"table table-hover\"><thead><tr><th>KEY</th><th>VALUE</th><th><a onclick=\"addDiv('profilesContent')\">Add</a></th></tr></thead><tbody>";
+      for(var jsonKey in dataobj){
+        if(jsonKey == "errorCode" || jsonKey == "errorMessage" || jsonKey == "name"){
+          continue;
+        }
+        str+="<tr id=\""+jsonKey+"\"><td contenteditable=\"true\">"+jsonKey + "</td><td class=\"text-nowrap\" contenteditable=\"true\">" + dataobj[jsonKey] + "</td><td><a onclick=\"delKEYdiv(this)\">Del</a></td></tr>";
+      }
+      str+="</tbody></div>";
+      document.getElementById("profileJsonContent").innerHTML = str;
+    }
+    function showCallbackJson(dataobj){
+      document.getElementById("callbackJsonContent").innerHTML = "";
+      var str="";
+      str+="<label for=\"jsonName\">Callback Name : </label><input type=\"text\" id=\"Callbacknamejson\">";
+      str+="<button type=\"button\" onclick=\"addjsonfunc('Callbacknamejson')\">PUT</button>";
+      str+="<div><table  id=\"callbackContent\" class=\"table table-hover\"><thead><tr><th>KEY</th><th>VALUE</th><th><a onclick=\"addDiv('callbackContent')\">Add</a></th></tr></thead><tbody>";
+      for(var jsonKey in dataobj){
+        if(jsonKey == "errorCode" || jsonKey == "errorMessage" || jsonKey == "name"){
+          continue;
+        }
+        str+="<tr id=\""+jsonKey+"\"><td contenteditable=\"true\">"+jsonKey + "</td><td  contenteditable=\"true\">" + dataobj[jsonKey] + "</td><td><a onclick=\"delKEYdiv(this)\">Del</a></td></tr>";
+      }
+      str+="</tbody></div>";
+      document.getElementById("callbackJsonContent").innerHTML = str;
+    }
+
+    function addjsonfunc(id) {
+      if(id == "Profilenamejson"){
+        var namesjson = document.getElementById("Profilenamejson").value;
+        var keyValDIV = document.getElementById("profilesContent");
+        var url = profileUrl;
+      }
+      if(id == "Callbacknamejson"){
+        var namesjson = document.getElementById("Callbacknamejson").value;
+        var keyValDIV = document.getElementById("callbackContent");
+        var url = callbackUrl;
+      }
+      var result = {};
+      if(namesjson == ""){
+        namesjson = "default";
+      }
+      result["name"] = namesjson;
+
+      // console.log(keyValDIV.childNodes[1].childNodes[0].childNodes[0].innerText);
+      for(var i = 0;i < keyValDIV.children[1].children.length;i++){
+        var keys = keyValDIV.childNodes[1].childNodes[i].childNodes[0].innerText;
+        var values = keyValDIV.childNodes[1].childNodes[i].childNodes[1].innerText;
+        result[keys] = values;
+      }
+
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          alert("Create success");
+        }
+      }
+      xmlhttp.open("PUT", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send(JSON.stringify(result));
+    }
+    var count = 0;
+    function addDiv(id){
+      var newKEYtr= document.createElement("tr");
+      if(id == "profilesContent"){
+        newKEYtr.id = "profilesContent"+count;
+        var divobj = document.getElementById("profilesContent");
+      }
+      if(id == "callbackContent"){
+        newKEYtr.id = "callbackContent"+count;
+        var divobj = document.getElementById("callbackContent");
+      }
+      newKEYtr.className = "newtr";
+      newKEYtr.innerHTML = "<td style=\"height:35px;padding-left: 8px;border-bottom:none;\" contenteditable=\"true\">key</td><td style=\"padding-left: 8px;height:35px;\" contenteditable=\"true\">value</td><td style=\"padding-left: 8px;height:35px;\"><a onclick=\"delKEYdiv(this)\">Del</a></td>";
+      count++;
+      divobj.appendChild(newKEYtr);
+    }
+    function delKEYdiv(self){
+      document.getElementById(self.parentNode.parentNode.id).remove();
+    }
+
+  </script>
+  <style type="text/css">
+    .control-group{
+      border:none;
+    }
+    .panel-heading,.panel-body{
+      border:1px solid rgb(51, 105, 232);
+    }
+
+    .margins{
+      margin-right: 3%;
+    }
+    #tableSort th{
+      background-color: rgb(51, 105, 232);
+      color:white;
+      font-size: 1.2em;
+      min-width: 120px;
+    }
+    #tableSort th span{
+      padding-right: 10px;
+    }
+    #myDiv{
+      margin:0;
+      padding:0;
+    }
+    a{
+      text-decoration: none;
+    }
+    a:hove{
+      text-decoration: none;
+    }
+    th{
+      min-width:100px;
+    }
+    .newtr{
+      border-top:1px solid #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="margin-left:20px;">
+      <h1>VAAS TUNNER DEV DEMO</h1>
+  </div>
+  <hr />
+  <div class="container-fluid">
+    <ul id="myTab" class="nav nav-tabs">
+      <li class="active"><a  href="#jobs" data-toggle="tab">Job and Jobpost</a></li>
+      <li><a href="#Jobpost" data-toggle="tab">Profile and Callback</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+      <div class="tab-pane fade in active" id="jobs">
+        <div class="row"  id="CommonPart">
+            <h3 style="padding-left:15px;">Common parts of job</h3>
+            <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-3 col-md-3">
+              <div class="panel-heading"><label class="panel-title control-label">s3_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="s3_input" value="s3://vaas-03-turner-dev/To Dao Lab"></div>
+            </div>
+            <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-3 col-md-3">
+              <div class="panel-heading"><label class="panel-title control-label">edl_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="edl_input" value="DS007823.edl"></div>
+            </div>
+            <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-3 col-md-3">
+              <div class="panel-heading"><label class="panel-title control-label">src_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="src_input" value="DS007823.mxf"></div>
+            </div>
+            <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-3 col-md-3">
+              <div class="panel-heading"><label class="panel-title control-label">opening_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="opening_input" value="CN_Opening_Bumper_HD.mxf"></div>
+            </div>
+            <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-3 col-md-3">
+              <div class="panel-heading"><label class="panel-title control-label">closing_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="closing_input" value="CN_Opening_Bumper_HD.mxf"></div>
+            </div>
+            <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-3 col-md-3">
+              <div class="panel-heading"><label class="panel-title control-label">logo_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="logo_input" value="CN_side_by_side_logo_bug_HD.png"></div>
+            </div>
+            <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-3 col-md-3">
+              <div class="panel-heading"><label class="panel-title control-label">s3_output : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="s3_output" value="s3://vaas-03-turner-dev/output/20190310/demo"></div>
+            </div>
+          </div>
+        <div class="row">
+          <form class="bs-example bs-example-form" role="form" id="formdiv">
+          </form>
+          <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group"  style="margin-top:20px;margin-left:20px;">
+                <button type="button" class="btn btn-default"  onclick="getJob()">SUBMIT</button>
+             </div>
+          </div>
+        </div>
+        <div id="myDiv" class="table-responsive">
+
+        </div>
+      </div>
+      <div class="tab-pane fade" id="Jobpost">
+        <div class="col" style="margin-top:20px;">
+          <div>
+            <div class="row">
+              <div id="profileDiv" class="col-xs-12 col-sm-12 col-lg-4 col-md-4"></div>
+              <div id="profileJsonContent" class="col-xs-12 col-sm-12 col-lg-8 col-md-8"></div>
+            </div>
+          </div>
+          <div>
+            <div class="row">
+              <div id="callbackDiv" class="col-xs-12 col-sm-12 col-lg-4 col-md-4"></div>
+              <div id="callbackJsonContent" class="col-xs-12 col-sm-12 col-lg-8 col-md-8"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    (function($) {
+      $.extend($, {
+        sortTable: {
+          sort: function(tableId, Idx) {
+            var table = document.getElementById(tableId);
+            var tbody = table.tBodies[0];
+            var tr = tbody.rows;
+
+            var trValue = new Array();
+            for (var i = 0; i < tr.length; i++) {
+              trValue[i] = tr[i];
+            }
+            if (tbody.sortCol == Idx) {
+              trValue.reverse();
+            } else {
+              trValue.sort(function(tr1, tr2) {
+                var value1 = tr1.cells[Idx].innerHTML;
+                var value2 = tr2.cells[Idx].innerHTML;
+                return value1.localeCompare(value2);
+              });
+            }
+            var fragment = document.createDocumentFragment();
+            for (var i = 0; i < trValue.length; i++) {
+              fragment.appendChild(trValue[i]);
+            }
+            tbody.appendChild(fragment);
+            tbody.sortCol = Idx;
+          }
+        }
+      });
+    })(jQuery);
+  </script>
+</body>
+</html>

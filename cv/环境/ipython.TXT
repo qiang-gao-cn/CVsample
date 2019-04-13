@@ -1,0 +1,4 @@
+sudo apt-get isntall ipython
+sudo pip install ipython
+
+sudo pip isntall Django

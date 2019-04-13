@@ -1,0 +1,18 @@
+http://www.ui3g.com/code/uicode-1547.html
+$('.photos').gallerify({
+    margin:10,
+    mode:'default',
+    lastRow:'adjust',
+});               
+配置参数
+blowup.js图片放大镜插件的可用配置参数有：
+
+参数	默认值	类型	描述
+margin	10	int	各个图片之间的margin值
+width	800	int	图片画廊的宽度，单位像素
+mode	default, 
+bootstrap, 
+flickr 或 small	string	模式参数用于决定该图片画廊如何显示，以及每行显示多少张图片
+lastRow	adjust 或 fullwidth	string	设置最后一行为全屏宽度或自动调整（建议使用自动调整）
+jsSetup	true 或 false	bool	设置元素的默认CSS样式。
+debounceLoad	true 或 false	bool	该参数会在渲染新的图片之前等待100毫秒，用于提高性能

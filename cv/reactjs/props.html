@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React State(状态) and 生命周期</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
+    <script src="https://npmcdn.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
+
+  </head>
+  <body>
+    <div id="example" class="container bg-primary"></div>
+    <script type="text/babel">
+      class AllMessage extends React.Component{
+        constructor(props) {
+          super(props);
+          //state
+          this.state = {date: new Date()};
+        }
+        //componentDidMount(mount) and componentWillUnmount(umount) 生命周期
+        componentDidMount(){
+          this.timerID = setInterval(
+            //()=>this.tick() 是 ES6 中声明函数的一种方式，叫做箭头函数表达式，引入箭头函数有两个方面的作用：更简短的函数并且不绑定 this。
+            // 箭头函数的基本语法如下：
+            //   (参数1, 参数2, …, 参数N) => { 函数声明 }
+            //   (参数1, 参数2, …, 参数N) => 表达式（单一）
+            //   //相当于：(参数1, 参数2, …, 参数N) =>{ return 表达式; }
+            //
+            //   // 当只有一个参数时，圆括号是可选的：
+            //   (单一参数) => {函数声明}
+            //   单一参数 => {函数声明}
+            //
+            //   // 没有参数的函数应该写成一对圆括号。
+            // 2、this.tick()
+            //   this.tick() 中的 this 指代的是 function，而不是我们想要的指代所在的组件类 Clock，所以我们要想办法让 this 能被正常指代。这里我们采用围魏救赵的办法:
+            //   let that = this;
+            //   this.timerID = setInterval(function () {
+            //     return that.tick();
+            //   },1000);
+            //   () => {函数声明}
+            () => this.tick(),1000
+          );
+        }
+        componentWillUnmount(){
+          clearInterval(this.timerID);
+        }
+        tick(){
+          this.setState({
+            date: new Date()
+          });
+        }
+        render(){
+          return(
+            <div>
+              <p>HELLO WORLD!</p>
+              <p>{this.state.date.toLocaleTimeString()}</p>
+            </div>
+          );
+        }
+      }
+      function App(){
+        return (
+          //note:<AllMessage/>前必须加上标签
+          <div>
+            <AllMessage/>
+            <AllMessage/>
+            <AllMessage/>
+          </div>
+        );
+      }
+      ReactDOM.render(
+          <App/>,
+          document.getElementById('example')
+      );
+
+    </script>
+  </body>
+</html>

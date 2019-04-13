@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" /> -->
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    var url = "https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/";
+    var profileUrl = url+"profile";
+    var callbackUrl = url+"bin";
+    window.onload=function(){
+      loadXMLDocs(profileUrl,loadProfile);
+      loadXMLDocs(callbackUrl,loadProfile);
+    }
+
+    function loadXMLDocs(urls,callback,urlname) {
+      var urlname = urls.split(url)[1];
+      if(urlname == "profile"){
+        var names = url.split("https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/profile")[1];
+      }
+      if(urlname == "bin"){
+        var names = url.split("https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/bin")[1];
+      }
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          if(names == "" || names == null || names == undefined){
+            callback(dataobj,urlname);
+          }else{
+            // callback(xmlhttp.responseText);
+            callback(dataobj,urlname);
+          }
+        }
+      }
+      xmlhttp.open("GET", urls, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send();
+    }
+    function loadProfile(dataobj,urlname){
+      var str="";
+      if(urlname == "profile"){
+        var url = profileUrl;
+        str+="<div><table id=\"profilesTitle\" class=\"table text-nowrap  table-hover table-bordered\"><thead><tr><th>Profile Name</th></tr></thead><tbody>";
+      }
+      if(urlname == "bin"){
+        var url = callbackUrl;
+        str+="<div><table id=\"callbackTitle\" class=\"table text-nowrap  table-hover table-bordered\"><thead><tr><th>Profile Name</th></tr></thead><tbody>";
+      }
+      for(var i = 0;i < dataobj.profile.length;i++){
+        if(urlname == "profile"){
+          str+="<tr><td>"+"<div onclick=\"loadXMLDocs('"+url+"?name="+dataobj.profile[i].split(".")[0]+"',showProfileJson)\">"+dataobj.profile[i].split(".")[0]+"</div></br />"+ "</td></tr>";
+        }
+        if(urlname == "bin"){
+          str+="<tr><td>"+"<div onclick=\"loadXMLDocs('"+url+"?name="+dataobj.profile[i].split(".")[0]+"',showCallbackJson)\">"+dataobj.profile[i].split(".")[0]+"</div></br />"+ "</td></tr>";
+        }
+      }
+      if(urlname == "profile"){
+        document.getElementById("profileDiv").innerHTML = str;
+      }
+      if(urlname == "bin"){
+        document.getElementById("callbackDiv").innerHTML = str;
+      }
+    }
+
+    function showProfileJson(dataobj){
+      document.getElementById("profileJsonContent").innerHTML = "";
+      var str="";
+      str+="<label for=\"jsonName\">Profile Name : </label><input type=\"text\" id=\"Profilenamejson\">";
+      str+="<button type=\"button\" onclick=\"addjsonfunc('Profilenamejson')\">PUT</button>";
+      str+="<div><table  id=\"profilesContent\" class=\"text-nowrap table table-hover\"><thead><tr><th>KEY</th><th>VALUE</th><th><a onclick=\"addDiv('profilesContent')\">Add</a></th></tr></thead><tbody>";
+      for(var jsonKey in dataobj){
+        if(jsonKey == "errorCode" || jsonKey == "errorMessage" || jsonKey == "name"){
+          continue;
+        }
+        str+="<tr id=\""+jsonKey+"\"><td contenteditable=\"true\">"+jsonKey + "</td><td  contenteditable=\"true\">" + dataobj[jsonKey] + "</td><td><a onclick=\"delKEYdiv(this)\">Del</a></td></tr>";
+      }
+      str+="</tbody></div>";
+      document.getElementById("profileJsonContent").innerHTML = str;
+    }
+    function showCallbackJson(dataobj){
+      document.getElementById("callbackJsonContent").innerHTML = "";
+      var str="";
+      str+="<label for=\"jsonName\">Callback Name : </label><input type=\"text\" id=\"Callbacknamejson\">";
+      str+="<button type=\"button\" onclick=\"addjsonfunc('Callbacknamejson')\">PUT</button>";
+      str+="<div><table  id=\"callbackContent\" class=\"text-nowrap table table-hover\"><thead><tr><th>KEY</th><th>VALUE</th><th><a onclick=\"addDiv('callbackContent')\">Add</a></th></tr></thead><tbody>";
+      for(var jsonKey in dataobj){
+        if(jsonKey == "errorCode" || jsonKey == "errorMessage" || jsonKey == "name"){
+          continue;
+        }
+        str+="<tr id=\""+jsonKey+"\"><td contenteditable=\"true\">"+jsonKey + "</td><td  contenteditable=\"true\">" + dataobj[jsonKey] + "</td><td><a onclick=\"delKEYdiv(this)\">Del</a></td></tr>";
+      }
+      str+="</tbody></div>";
+      document.getElementById("callbackJsonContent").innerHTML = str;
+    }
+
+    function addjsonfunc(id) {
+      alert(id);
+      console.log("id");
+      if(id == "Profilenamejson"){
+        var namesjson = document.getElementById("Profilenamejson").value;
+        var keyValDIV = document.getElementById("profilesContent");
+        var url = profileUrl;
+      }
+      if(id == "Callbacknamejson"){
+        var namesjson = document.getElementById("Callbacknamejson").value;
+        var keyValDIV = document.getElementById("callbackContent");
+        var url = callbackUrl;
+      }
+      var result = {};
+      if(namesjson == ""){
+        namesjson = "default";
+      }
+      result["name"] = namesjson;
+      // console.log(keyValDIV.childNodes[1].childNodes[0].childNodes[0].innerText);
+      for(var i = 0;i < keyValDIV.children[1].children.length;i++){
+        var keys = keyValDIV.childNodes[1].childNodes[i].childNodes[0].innerText;
+        var values = keyValDIV.childNodes[1].childNodes[i].childNodes[1].innerText;
+        result[keys] = values;
+      }
+      console.log(result);
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+        }
+      }
+
+      xmlhttp.open("PUT", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send(JSON.stringify(result));
+    }
+    var count = 0;
+    function addDiv(id){
+      var newKEYtr= document.createElement("tr");
+      if(id == "profilesContent"){
+        newKEYtr.id = "profilesContent"+count;
+        var divobj = document.getElementById("profilesContent");
+      }
+      if(id == "callbackContent"){
+        newKEYtr.id = "callbackContent"+count;
+        var divobj = document.getElementById("callbackContent");
+      }
+      newKEYtr.className = "newtr";
+      newKEYtr.innerHTML = "<td style=\"height:35px;padding-left: 8px;border-bottom:none;\" contenteditable=\"true\">key</td><td style=\"padding-left: 8px;height:35px;\" contenteditable=\"true\">value</td><td style=\"padding-left: 8px;height:35px;\"><a onclick=\"delKEYdiv(this)\">Del</a></td>";
+      count++;
+      divobj.appendChild(newKEYtr);
+    }
+    function delKEYdiv(self){
+      document.getElementById(self.parentNode.parentNode.id).remove();
+    }
+  </script>
+  <style type="text/css">
+    a{
+      text-decoration: none;
+    }
+    a:hove{
+      text-decoration: none;
+    }
+    th{
+      min-width:100px;
+    }
+    .newtr{
+      border-top:1px solid #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-lg-6 col-md-6">
+        <div class="row">
+          <div id="profileDiv" class="col-xs-12 col-sm-12 col-lg-4 col-md-4"></div>
+          <div id="profileJsonContent" class="col-xs-12 col-sm-12 col-lg-8 col-md-8"></div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-lg-6 col-md-6">
+        <div class="row">
+          <div id="callbackDiv" class="col-xs-12 col-sm-12 col-lg-4 col-md-4"></div>
+          <div id="callbackJsonContent" class="col-xs-12 col-sm-12 col-lg-8 col-md-8"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" /> -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    //load ajax method get
+    function loadXMLDoc() {
+      var url = " https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/job";
+      var jobContent = [
+      "JobID","profile","speed","progress","status","input","output","video_height","video_width",
+      "video_bitrate","video_codec","audio_bitrate","audio_codec","closing_input","src_input",
+      "s3_input","s3_output","duration","edl_input","end_cb","format","ini_cb","logo_input",
+      "opening_input","output_time","LastUpdate"];
+
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          //创建数据表格
+          var str = "";
+
+          str += "<table  summary=\"user infomation table\" id=\"tableSort\" class=\"sortable table table-hover table-striped table-bordered\"><thead><tr>";
+          for(var i = 0; i < jobContent.length;i++){
+              str += "<th  onclick=\"$.sortTable.sort('tableSort',"+i+")\" style=\"cursor: pointer;\">"+jobContent[i]+"</th>";
+          }
+          str += "</tr></thead><tbody>";
+          for (var i = 0; i < dataobj.items.length; i++) {
+            str += "<tr>";
+            for(var j = 0; j < jobContent.length;j++){
+              if(dataobj.items[i][jobContent[j]] == "" || dataobj.items[i][jobContent[j]] == "null" || dataobj.items[i][jobContent[j]] == undefined){
+                dataobj.items[i][jobContent[j]] = "N/A";
+              }
+              str += "<td>" + dataobj.items[i][jobContent[j]] + "</td>";
+            }
+            str += "</tr>";
+          }
+          str += "</tbody></table>";
+          document.getElementById("myDiv").innerHTML = str;
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send();
+    }
+
+
+  </script>
+
+  <style type="text/css">
+    #tableSort th{
+      background-color: rgb(51, 105, 232);
+      color:white;
+      font-size: 1.2em;
+      min-width: 150px;
+    }
+    #tableSort th span{
+      padding-right: 10px;
+    }
+  </style>
+</head>
+
+<body onload="loadXMLDoc()">
+  <div class="container-fluid">
+    <div id="myDiv" class="table-responsive">
+
+    </div>
+  </div>
+	<script type="text/javascript">
+	(function($){
+			//鎻掍欢
+			$.extend($,{
+					//鍛藉悕绌洪棿
+					sortTable:{
+							sort:function(tableId,Idx){
+									var table = document.getElementById(tableId);
+									var tbody = table.tBodies[0];
+									var tr = tbody.rows;
+
+									var trValue = new Array();
+									for (var i=0; i<tr.length; i++ ) {
+											trValue[i] = tr[i];
+									}
+									console.log(trValue);
+									if (tbody.sortCol == Idx) {
+											trValue.reverse();
+									} else {
+											trValue.sort(function(tr1, tr2){
+													var value1 = tr1.cells[Idx].innerHTML;
+													var value2 = tr2.cells[Idx].innerHTML;
+													return value1.localeCompare(value2);
+											});
+									}
+
+									var fragment = document.createDocumentFragment();
+									for (var i=0; i<trValue.length; i++ ) {
+											fragment.appendChild(trValue[i]);
+									}
+
+									tbody.appendChild(fragment);
+									tbody.sortCol = Idx;
+							}
+					}
+			});
+
+	})(jQuery);
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+google浏览器使用不了ajax，可以使用firefox

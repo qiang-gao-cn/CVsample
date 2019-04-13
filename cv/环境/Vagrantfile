@@ -1,0 +1,21 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/centos-7.4"
+  config.vm.box_url = "file://C:/Users/13889/Desktop/Volo.Farm.Staging/NAS/Vagrant-bento-201803.24.0-centos-7.4.box"
+  #config.vm.box_url = "http://demo.dao-lab.com:28080/Vagrant-bento-201803.24.0-centos-7.4.box"
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "512"
+    vb.cpus = 1
+  end
+  config.vm.network "private_network", ip: "192.168.100.100"
+  config.vm.provision "shell", path: "../setup.sh", privileged: "true", env: {"SETUP_NAS_SERVER" => "true"}
+end
+
+
+#虚拟机名称
+#vb.name = "centos_visa"
+#虚拟机主机名
+#config.vm.hostname = "volo"
+配置虚拟机内存和cpu
+#vb.memory = "1024"
+#vb.cpus = 2

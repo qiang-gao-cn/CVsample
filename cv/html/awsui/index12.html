@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" /> -->
+  <script src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+  <script src="http://hovertree.com/texiao/easysector/jquery.easysector.1.0.0.js"></script>
+  <script type="text/javascript">
+    function loadDate() {
+      //确定当天的日期
+      var d = new Date();
+      var month = (d.getMonth() + 1) >= 10 ? (d.getMonth() + 1) : ('0' + (d.getMonth() + 1));
+      var day = d.getDate() >= 10 ? d.getDate() : ('0' + d.getDate());
+      var year = d.getFullYear();
+      var endDate = year + "-" + month + "-" + day;
+      var x = document.getElementsByTagName('input')[0];
+      x.setAttribute("value", endDate);
+      displayResult(self)
+    }
+    //判断input date的日期
+    function displayResult(self) {
+      var x = document.getElementsByTagName('input')[0];
+      var d = new Date();
+      var ipt_Val = x.value;
+      var iptVal = Date.parse(new Date(ipt_Val.replace(/-/g, "/")));
+
+      var time = "2018-12-20";
+      var initVal = Date.parse(new Date(time.replace(/-/g, "/")));
+
+      var now = d.getTime();
+      if (iptVal < initVal || iptVal > now) {
+        alert("please choose date from 2018-12-20 to now!!");
+      } else {
+        loadXMLDoc(self, ipt_Val);
+      }
+    }
+
+    //load ajax method get
+    function loadXMLDoc(self, dates) {
+      var divobj = document.getElementById("totalDiv");
+      divobj.innerHTML = "";
+      var circlesobj = document.getElementById("easysector");
+      circlesobj.innerHTML = "";
+      document.getElementById("myDiv").innerHTML = "<div style=\"width:400px;height:100px;text-align:center;line-height:100px;position:fixed;left:40%;top:30%;border:1px solid black;\">数据加载中，请稍等......</div>";
+      //var url = "https://2g5p8jx5q5.execute-api.ap-southeast-1.amazonaws.com/default/vaas-am730-cf-report?date=" + dates;
+      var url = "jsonn/2019-01-15";
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+
+          for (var i = 0; i < dataobj.length; i++) {
+            for (var key in dataobj[i]) {
+              if (key != "date" && key != "ua_OSX_Desktop" && key != "ua_bot" && key != "played_sec" && key != "ua_Linux_Desktop" && key != "uri" && key != "played_num" && key != "ua_iOS" && key != "ua_Windows_Desktop" && key != "ua_Android") {
+                dataobj[i].ua_others = dataobj[i][key];
+              }
+              dataobj[i][key] = dataobj[i][key];
+            }
+          }
+
+          //进行排序
+          var ids = self.id;
+
+          for (var i = 0; i < dataobj.length; i++) {
+            if (dataobj[i].ua_OSX_Desktop == undefined) {
+              dataobj[i].ua_OSX_Desktop = 0;
+            }
+            if (dataobj[i].ua_bot == undefined) {
+              dataobj[i].ua_bot = 0;
+            }
+            if (dataobj[i].ua_Linux_Desktop == undefined) {
+              dataobj[i].ua_Linux_Desktop = 0;
+            }
+            if (dataobj[i].ua_iOS == undefined) {
+              dataobj[i].ua_iOS = 0;
+            }
+            if (dataobj[i].ua_Windows_Desktop == undefined) {
+              dataobj[i].ua_Windows_Desktop = 0;
+            }
+            if (dataobj[i].ua_Android == undefined) {
+              dataobj[i].ua_Android = 0;
+            }
+            if (dataobj[i].ua_others == undefined) {
+              dataobj[i].ua_others = 0;
+            }
+          }
+
+          dataobj.sort(function(a, b) {
+            return b.played_num - a.played_num;
+          })
+          //创建数据表格
+
+          var str = "";
+          str += "<table id=\"INFO\"><tr>";
+          str +=
+            "<th style=\"width:16%;\">Video name</th><th>DATE</th><th id=\"played_num\">Played Num</th><th id=\"played_time\">Played Time</th><th id=\"ua_OSX_Desktop\" >OSX Desktop</th><th id=\"ios\" >IOS</th><th id=\"linux_desktop\" >Linux Desktop</th><th id=\"winDesktop\" >Window Desktop</th><th id=\"androids\" >Android</th><th id=\"bots\">Bot</th><th id=\"others\">Others</th>";
+
+          for (var i = 0; i < dataobj.length; i++) {
+            str += "</tr><tr><td>" + dataobj[i].uri + "</td>";
+            str += "<td>" + dataobj[i].date + "</td>";
+            str += "<td>" + dataobj[i].played_num + "</td>";
+            str += "<td>" + dataobj[i].played_sec + "</td>";
+            str += "<td>" + dataobj[i].ua_OSX_Desktop + "</td>";
+            str += "<td>" + dataobj[i].ua_iOS + "</td>";
+            str += "<td>" + dataobj[i].ua_Linux_Desktop + "</td>";
+            str += "<td>" + dataobj[i].ua_Windows_Desktop + "</td>";
+            str += "<td>" + dataobj[i].ua_Android + "</td>";
+            str += "<td>" + dataobj[i].ua_bot + "</td>";
+            str += "<td>" + dataobj[i].ua_others + "</td>";
+            str += "</tr>";
+          }
+          str += "</table>";
+          document.getElementById("myDiv").innerHTML = str;
+          displayInfo(dates);
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "S7VhXUVH6U1Cy2OH6H2h37rAyA47I2V39inel5Rw");
+      xmlhttp.send();
+    }
+
+    //show info total
+    function displayInfo(dates) {
+      var divobj = document.getElementById("totalDiv");
+      var trobj = document.getElementsByTagName("tr");
+
+      var ua_OSX_Desktop_sum = 0,
+        ua_bot_sum = 0,
+        played_sec_sum = 0,
+        ua_Linux_Desktop_sum = 0,
+        played_num_sum = 0,
+        ua_iOS_sum = 0,
+        ua_Windows_Desktop_sum = 0,
+        ua_Ohters_sum = 0,
+        ua_Android_sum = 0;
+      //循环计算各项的值
+      for (var i = 1; i < trobj.length; i++) {
+        ua_OSX_Desktop_sum += parseInt(trobj[i].childNodes[4].innerHTML);
+        ua_bot_sum += parseInt(trobj[i].childNodes[9].innerHTML);
+        played_sec_sum += parseInt(trobj[i].childNodes[2].innerHTML);
+        ua_Linux_Desktop_sum += parseInt(trobj[i].childNodes[6].innerHTML);
+        played_num_sum += parseInt(trobj[i].childNodes[3].innerHTML);
+        ua_iOS_sum += parseInt(trobj[i].childNodes[5].innerHTML);
+        ua_Windows_Desktop_sum += parseInt(trobj[i].childNodes[7].innerHTML);
+        ua_Android_sum += parseInt(trobj[i].childNodes[8].innerHTML);
+        ua_Ohters_sum += parseInt(trobj[i].childNodes[10].innerHTML);
+      }
+
+      divobj.innerHTML = "<table id=\"totalINFO\">" +
+        "<caption><div style=\"width: 50%;\"><h2>" + dates + " AM730 Daily Report<hr style=\"margin-top:0;\"><hr style=\"margin-top: -10px;\"></h2></caption>" +
+        "<tr><th>Played Time Total</th><th>Played Num Total</th><th>OSX Desktop Total</th><th>IOS Total</th><th>Linux Desktop Total</th><th>Window Desktop Total</th><th>Android Total</th><th>Bot Total</th><th>Others Total</th></tr>" +
+        "<tr><td>" + played_sec_sum + "</td><td>" + played_num_sum + "</td><td>" + ua_OSX_Desktop_sum + "</td><td>" + ua_iOS_sum + "</td><td>" + ua_Linux_Desktop_sum + "</td><td>" + ua_Windows_Desktop_sum + "</td><td>" + ua_Android_sum + "</td><td>" +
+        ua_bot_sum + "</td><td>" + ua_Ohters_sum + "</td></tr></table>";
+
+      //生成圆形统计图
+      document.getElementById("easysector").innerHTML = "";
+      var colors = ["red", "blue", "orange", "yellow", "green", "#00FFFF", "pink", "#BA55D3", "#F5F5DC"];
+      var h_items = new Array();
+      var sum = 0;
+      for (var i = 2; i < trobj[1].childNodes.length; i++) {
+        h_items[sum] = {
+          "h_title": trobj[0].childNodes[i].innerHTML,
+          "h_amount": parseInt(trobj[1].childNodes[i].innerHTML),
+          "h_color": colors[i]
+        }
+        sum++;
+      }
+      $("#easysector").easysector({
+        "h_items": h_items,
+        "h_title": "",
+        "h_width": 260,
+        "h_borderColor": "silver",
+        "h_poindlength": 0,
+        "h_showamount": true,
+        "h_backColor": "#eee",
+        "h_recwidth": 20,
+        "h_titlesize": 24,
+        "h_Radii": 125,
+        "h_infosize": 16
+      });
+      document.getElementById("easysector").style = "border:none;";
+    }
+
+    function downloadFile() {
+      var xmlhttp = new XMLHttpRequest();
+      var trobj = document.getElementsByTagName("tr");
+      var divobjs = document.getElementById("myDiv");
+      var filename = divobjs.childNodes[0].childNodes[0].childNodes[1].childNodes[1].innerHTML;
+
+      if (divobjs.childNodes[0].id == "INFO") {
+        var url = filename + ".csv";
+        var obj = "";
+        for (var i = 0; i < trobj.length; i++) {
+          for (var j = 0; j < trobj[i].childNodes.length; j++) {
+            obj += trobj[i].childNodes[j].innerHTML;
+            obj += ",";
+          }
+          obj += "\r\n";
+        }
+      }
+
+
+      //下载功能
+      const a = document.createElement('a');
+      a.setAttribute('download', url);
+      var blob = URL.createObjectURL(new Blob([obj]));
+      a.setAttribute('href', blob);
+      a.click();
+    }
+
+    window.onscroll = function() {
+      var t = document.documentElement.scrollTop || document.body.scrollTop;
+      var top_div = document.getElementById("returnTop");
+      if (t >= 300) {
+        top_div.style.display = "inline";
+      } else {
+        top_div.style.display = "none";
+      }
+    }
+  </script>
+  <style type="text/css">
+    #totalDiv,
+    #myDiv table {
+      text-align: left;
+      word-break: break-all;
+    }
+
+    #totalDiv table {
+      background: #708090;
+    }
+
+    #totalDiv td {
+      color: white;
+    }
+
+    #myDiv table td {
+      width: 8%;
+      border-left: 1px solid white;
+    }
+
+    #myDiv table th {
+      background: #0080ff;
+      color: white;
+      height: 40px;
+      width: 8%;
+    }
+
+    #myDiv table tr:nth-child(even) {
+      background: #eaf3f5;
+    }
+
+    .header {
+      width: 100%;
+      height: 220px;
+    }
+
+    #forms {
+      float: left;
+      width: 16%;
+      min-width: 135px;
+    }
+
+    #forms button {
+      position: absolute;
+      left: 15px;
+      top: 180px;
+    }
+
+    #forms input {
+      float: left;
+      margin-left: 5px;
+    }
+
+    #forms input[type="button"] {
+      height: 24px;
+      color: #8c96a0;
+      border: 1px solid #dce1e6;
+      background: -webkit-linear-gradient(top, #f2f3f7, #e4e8ec);
+      background: -moz-linear-gradient(top, #f2f3f7, #e4e8ec);
+      font-weight: bold;
+    }
+
+    #totalDiv {
+      float: left;
+      width: 50%;
+    }
+
+    #myDiv {
+      width: 100%;
+      float: right;
+    }
+
+    .returnTop {
+      position: fixed;
+      right: 2%;
+      bottom: 2%;
+      background: skyblue;
+      display: none;
+    }
+
+    .circles {
+      float: right;
+    }
+
+    .easysectorinfo {
+      position: absolute;
+      right: 290px;
+      top: 40px;
+    }
+
+    .easycanvas {
+      width: 70%;
+      padding-top: 20px;
+    }
+
+    .button {
+      width: 145px;
+      line-height: 38px;
+      font-weight: bold;
+      border-radius: 5px;
+      position: relative;
+    }
+
+    .button.gray {
+      color: #8c96a0;
+      border: 1px solid #dce1e6;
+      background: -webkit-linear-gradient(top, #f2f3f7, #e4e8ec);
+      background: -moz-linear-gradient(top, #f2f3f7, #e4e8ec);
+    }
+
+    .round {
+      padding-right: 30px;
+    }
+
+    .round:after {
+      position: absolute;
+      content: "\003c";
+      top: 50%;
+      right: 10px;
+      margin-top: -10px;
+      width: 17px;
+      height: 20px;
+      padding-left: 3px;
+      line-height: 18px;
+      font-size: 10px;
+      font-weight: normal;
+      border-radius: 10px;
+      -webkit-transform: rotate(-90deg);
+      -moz-transform: rotate(-90deg);
+    }
+
+    .gray.round:after {
+      background: -webkit-linear-gradient(top, #dce1e6, #dde2e7);
+      background: -moz-linear-gradient(top, #dce1e6, #dde2e7);
+    }
+
+    input[type="date"]::-webkit-datetime-edit{
+      color: gray;
+      padding-left: 10px;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator { 
+      display: block;
+    }
+
+  </style>
+</head>
+
+<body onload="loadDate()">
+  <div class="header">
+    <div id="forms">
+      <!-- <a name="top"><input type="date" name="" id="dateIpt" onchange="displayResult(this)"></a> -->
+      <input type="date" name="" id="dateIpt">
+      <input type="button" id="loadDate" onclick="displayResult(this)" value="Load Date" />
+      <!-- <button type="button" id="loadDate" onclick="displayResult(this)">Download CSV</button> -->
+      <button type="button" class="button gray round" id="downloads" onclick="downloadFile()">Download CSV</button>
+    </div>
+    <!-- 绘制圆形统计图 -->
+    <div class="circles" id="circles">
+      <div id="easysector"></div>
+    </div>
+    <div id="totalDiv"></div>
+  </div>
+  <div id="myDiv">
+  </div>
+  <div class="returnTop" id="returnTop">
+    <a href="javascript:scroll(0,0)" style="text-decoration:none;">返回<br />顶部</a>
+  </div>
+</body>
+
+</html>

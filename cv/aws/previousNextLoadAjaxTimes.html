@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>previous and next</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+    function loadXMLdoc(start,end) {
+      var url = "note.json";
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+
+          function sortJson(array, key, order) {
+            return array.sort(function(index, next) {
+              var a = index[key];
+              var b = next[key];
+              if ("asc" == order) {
+                return ((a > b) ? -1 : ((a < b) ? 1 : 0));
+              } else {
+                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+              }
+            });
+          }
+          sortJson(dataobj.items, 'JobId', 'asc');
+
+          var str = "";
+          str += "<div id=\"divTh\"><table border=\"1\"><tr>";
+          str += "<th>JobId</th><th>Input</th><th>VideoSize</th><th>State</th><th>Progress</th><th>Speed</th><th>Duration</th><th>Output</th>" +
+            "<th>Format</th><th>LastUpdate</th><th>AudioBitrate</th><th>VideoBitrate</th></tr></div>";
+          for (var i = 0; i < dataobj["items"].length; i++) {
+            if (i >= start && i < end) {
+              str += "<div id=\""+ "tableDdiv" + end/3 +"\">"
+              str += "<tr><td>" + dataobj["items"][i]["JobId"] + "</td><td>" + dataobj["items"][i]["Input"] + "</td><td>" + dataobj["items"][i]["VideoSize"] +
+                "</td><td>" + dataobj["items"][i]["State"] + "</td><td>" + dataobj["items"][i]["Progress"] + "</td><td>" +
+                dataobj["items"][i]["Speed"] + "</td><td>" + dataobj["items"][i]["Duration"] + "</td><td>" + dataobj["items"][i]["Output"] + "</td><td>" +
+                dataobj["items"][i]["Format"] + "</td><td>" + dataobj["items"][i]["LastUpdate"] + "</td><td>" +
+                dataobj["items"][i]["AudioBitrate"] + "</td><td>" +
+                dataobj["items"][i]["VideoBitrate"] + "</td></tr></div>";
+            }
+          }
+          str += "</table>";
+          document.getElementById('contentDiv').innerHTML = str;
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "ZFazSV91M77Mx83P8qIQRahntdAKzZ4a3w1Qp0XD");
+      xmlhttp.send();
+    }
+    function changePage(self) {
+      console.log(self.innerText);
+      var num = self.innerText;
+      var start = (num - 1)*3;
+      var end = num*3;
+      loadXMLdoc(start,end);
+    }
+
+    </script>
+    <style>
+
+    </style>
+  </head>
+  <body onload="loadXMLdoc(0,3)">
+    <div class="container-fluid">
+      <div class="content">
+
+      </div>
+      <div class="page">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-end">
+            <li class="page-item"  onclick="changePage(this)"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"  onclick="changePage(this)"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"  onclick="changePage(this)"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"  onclick="changePage(this)"><a class="page-link" href="#">4</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="contentDiv" id="contentDiv">
+
+      </div>
+    </div>
+  </body>
+</html>

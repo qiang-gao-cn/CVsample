@@ -1,0 +1,44 @@
+      .container-fluid {
+          display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;
+          flex-wrap: wrap;
+      }
+      .container-fluid > [class*='col-'] {
+          display: flex;
+          flex-direction: column;
+      }
+
+.row{
+    overflow: hidden;
+}
+
+[class*="col-"]{
+    margin-bottom: -99999px;
+    padding-bottom: 99999px;
+}
+
+
+在row结束的地方清除浮动，添加<div class="clearfix"></div>，这个最简单，但限制最多，每列的div的背景色要相同，
+并且不能有边框
+<div class="row">
+ 
+   <div class="col-xs-6 col-md-3" id="col1">
+
+    A
+    </div>
+    <div class="col-xs-6 col-md-3" id="col2">
+
+    B<p>B</p>
+    </div>
+    <div class="col-xs-6 col-md-3" id="col3">
+
+    C
+    </div>
+    <div class="col-xs-6 col-md-3" id="col4">
+    D
+    </div>
+
+    <div class="clearfix"></div>
+</div>

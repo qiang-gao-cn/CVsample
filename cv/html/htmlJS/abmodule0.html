@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript">
+      function tabit(id,cid) {
+      volo.style.display="none";
+      formdiv.style.display="none";
+      cid.style.display="block";
+      }
+    </script>
+  </head>
+  <body>
+      <div width="400" height="169" border="0" cellpadding="3" cellspacing="1" bgcolor="#990000">
+        <ul>
+           <li height="20" class="menu1" id="volomenu" onmouseover="tabit(volomenu,volo)">首页</li>
+           <li height="20" class="menu2" id="formdiv_menu" onmouseover="tabit(formdiv_menu,formdiv)">LOG</li>
+        </ul>
+      </div>
+      <div id="ctab">
+      <ul id="volo" style="display:block;background:blue;color:#fff;">
+        <li height="100" colspan="2" bgcolor="#FFFFFF">今日焦点的内容</li>
+      </ul>
+      <ul id="formdiv" style="display:none;background:yellow;">
+        <li height="100" colspan="2" bgcolor="#FFFFFF">一周热门的内容</li>
+      </ul>
+      </div>
+
+  </body>
+</html>

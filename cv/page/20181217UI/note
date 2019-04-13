@@ -1,0 +1,22 @@
+function enableJob(jobName, status) {
+    var jobNew = {"Enable": status}
+    loadJson("../" + jobName, saveJob, jobNew);
+}
+
+function saveJob(jobOld, jobNew, filename) {
+    var result = {};
+    for(var key in jobOld) result[key] = jobOld[key];
+    for(var key in jobNew) result[key] = jobNew[key];
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("PUT", "api/"+filename, true);
+    xhttp.send(JSON.stringify(result));
+}
+
+var tabs = document.createElement("table");
+document.getElementById("divval").appendChild(tabs);
+for (var objs in dataObj) {
+  var trs = document.createElement("tr");
+  tabs.appendChild(trs);
+  trs.innerHTML = "<tr><th>"+ objs +"</th>"+"<td>"+"<input id=\""+objs+"\" type=\"text\" value=\""+dataObj[objs]+"\">" +"</td></tr>";
+}

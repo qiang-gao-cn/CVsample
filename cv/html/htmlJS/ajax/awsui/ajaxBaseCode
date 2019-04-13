@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript">
+function loadXMLDoc()
+{
+ var xmlhttp;
+ if (window.XMLHttpRequest)
+ {
+   //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+   xmlhttp=new XMLHttpRequest();
+ }
+ else
+ {
+   // IE6, IE5 浏览器执行代码
+   xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ }
+ xmlhttp.onreadystatechange=function()
+ {
+   if (xmlhttp.readyState==4 && xmlhttp.status==200)
+   {
+     //get xmlhttp.responseText表示获得的数据对象
+     document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+   }
+ }
+ //method  get post put delete
+ //post put send(添加发送的数据)
+ xmlhttp.open("GET","../a.txt",true);
+ xmlhttp.send();
+}
+
+// document.querySelector(".getbtn").onclick= function(){
+//     var xmlhttp = new XMLHttpRequest();
+//     xmlhttp.open("GET", "http://192.168.1.200:8080/php/test.php?name='zhansgang'&age=12", true);
+//     xmlhttp.setRequestHeader("token","header-token-value");
+//     xmlhttp.setRequestHeader("dingyi","header-dingyi-value");
+//     xmlhttp.send();
+//     // readyState == 4 为请求完成，status == 200为请求陈宫返回的状态
+//     xmlhttp.onreadystatechange = function(){
+//         if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+//             console.log(xmlhttp.responseText);
+//         }
+//     }
+// };
+</script>
+</head>
+<body onload="loadXMLDoc()">
+<div id="myDiv"><h2>使用 AJAX 修改该文本内容</h2></div>
+</body>
+</html>

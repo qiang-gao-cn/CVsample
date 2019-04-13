@@ -1,0 +1,13 @@
+下载centos的minimal iso镜像文件，资源https://www.centos.org/ 中minimal iso选项；
+运行vbox虚拟机进行安装；
+注意：（将安装生成的文件与iso放在一个文件夹下如centosfile）
+cd centosfile
+git init
+vagrant package —base centos75
+vagrant box add centos75 package.box
+以上为生成box
+git init
+vagrant init centos75
+vagrant up
+注意：当运行vagrant up命令结束后，在虚拟机vbox上点击show（显示），来显示并操作安装的系统；
+以上为运行box

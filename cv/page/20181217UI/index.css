@@ -1,0 +1,16 @@
+*{
+  margin:*;
+  padding:*;
+  list-style-type: none;
+  font-size:16px;
+  background-color: lightgray;
+}
+th{
+  float:left;
+}
+input[type="text"]{
+   border-style: none;
+}
+/* table{
+  float: left;
+} */

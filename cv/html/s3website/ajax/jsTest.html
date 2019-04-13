@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>test ajax</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <style type="text/css">
+       *{margin:auto;padding:auto;}
+      .box{width:auto;height:180px;margin-bottom:20px;}
+      .float-left{float:left;}
+    </style>
+  <script type="text/javascript">
+      function ajaxLoad(){
+        var xmlhttp;
+        if(window.XMLHttpRequest){
+          xmlhttp=new XMLHttpRequest();
+        }else {
+          xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange=function(){
+          if(xmlhttp.readyState==4&&xmlhttp.status==200){
+            var data=xmlhttp.responseText;
+            console.log(data);
+
+            dataObj=JSON.parse(data);
+            var divObj=document.getElementById('div1');
+            var str="";
+	          str+="<div class=\"float-left box border border-primary rounded float-left col-xs-12 col-sm-6 col-md-6 col-lg-3\">";
+
+            // str+="Status : "+dataObj.Status;
+	          // str+= "</br>";
+            // str+="LastUpdate : "+dataObj.LastUpdate;
+	          // str+= "</br>";
+            // str+="roomid : "+dataObj.roomid;
+	          // str+= "</br>";
+            // str+="eventid : "+dataObj.eventid;
+	          // str+= "</br>";
+            // str+="IsPrimary: "+dataObj.IsPrimary;
+	          // str+= "</br>";
+            // str+="JobId : "+dataObj.JobId;
+	          // str+= "</br>";
+	          str+="</div>";
+            divObj.innerHTML=str;
+          }
+        }
+	      var url = "https://tfrba4foa0.execute-api.ap-southeast-1.amazonaws.com/default/api/listjobs";
+        xmlhttp.open("GET",url,true);
+        xmlhttp.setRequestHeader("x-api-key","nrkzi8zU8c6ICLqeROQZd7hcCaIv6shy9KrGsDZY");
+        xmlhttp.send();
+      }
+  </script>
+</head>
+<body onload="ajaxLoad()">
+<div class="container"  id="div1">
+</div>
+</body>
+</html>

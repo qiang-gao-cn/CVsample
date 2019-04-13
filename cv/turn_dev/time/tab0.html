@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Turner UI</title>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript">
+    var urlProfile = "https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/profile";
+    var urlJob = " https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/job";
+    var jobContent = [
+    "JobID","profile","speed","progress","status","input","output","video_height","video_width",
+    "video_bitrate","video_codec","audio_bitrate","audio_codec","closing_input","src_input",
+    "s3_input","s3_output","duration","edl_input","end_cb","format","ini_cb","logo_input",
+    "opening_input","output_time","LastUpdate"];
+
+    window.onload = function() {
+      loadXMLDoc(urlJob, loadXMLDocJob);
+      loadXMLDoc(urlProfile, loadProfile);
+      loadJob();
+    }
+
+    function loadXMLDoc(urlProfile, callback) {
+      var names = urlProfile.split("https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/profile")[1];
+
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          if (names == "" || names == null || names == undefined) {
+            callback(dataobj);
+          } else {
+            // callback(xmlhttp.responseText);
+            callback(dataobj);
+          }
+        }
+      }
+      xmlhttp.open("GET", urlProfile, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send();
+    }
+
+    //load ajax method get
+    function loadXMLDocJob(dataobj) {
+      //创建数据表格
+      var str = "";
+      str += "<table  summary=\"user infomation table\" id=\"tableSort\" class=\"sortable table table-hover table-striped table-bordered\"><thead><tr>";
+      for (var i = 0; i < jobContent.length; i++) {
+        str += "<th  onclick=\"$.sortTable.sort('tableSort'," + i + ")\" style=\"cursor: pointer;\">" + jobContent[i] + "</th>";
+      }
+      str += "</tr></thead><tbody>";
+      for (var i = 0; i < dataobj.items.length; i++) {
+        str += "<tr>";
+        for (var j = 0; j < jobContent.length; j++) {
+          if (dataobj.items[i][jobContent[j]] == "" || dataobj.items[i][jobContent[j]] == "null" || dataobj.items[i][jobContent[j]] == undefined) {
+            dataobj.items[i][jobContent[j]] = "N/A";
+          }
+          str += "<td>" + dataobj.items[i][jobContent[j]] + "</td>";
+        }
+        str += "</tr>";
+      }
+      str += "</tbody></table>";
+      document.getElementById("myDivJob").innerHTML = str;
+    }
+
+    function loadProfile(dataobj) {
+      var str = "";
+      str += "<div><table class=\"table table-hover table-bordered\"><thead><tr><th>Profile Name</th></tr></thead><tbody>";
+      for (var i = 0; i < dataobj.profile.length; i++) {
+        console.log(dataobj.profile[i].split(".")[0]);
+        str += "<tr><td>" + "<div onclick=\"loadXMLDoc('" + urlProfile + "?name=" + dataobj.profile[i].split(".")[0] + "',showJson)\">" + dataobj.profile[i].split(".")[0] + "</div></br />" + "</td></tr>";
+      }
+      document.getElementById("myDivProfile").innerHTML = str;
+    }
+
+    function showJson(dataobj) {
+      document.getElementById("jsonContent").innerHTML = "";
+      var str = "";
+      str += "<div style=\"width:30%;\"><table class=\"table table-hover table-bordered\"><thead><tr><th>KEY</th><th>VALUE</th></tr></thead><tbody>";
+      for (var jsonKey in dataobj) {
+        if (jsonKey == "errorCode" || jsonKey == "errorMessage" || jsonKey == "name ") {
+          continue;
+        }
+        str += "<tr><td>" + jsonKey + "</td><td contenteditable=\"true\">" + dataobj[jsonKey] + "</td></tr>";
+      }
+      str += "</tbody></div>";
+      document.getElementById("jsonContent").innerHTML = str;
+    }
+
+    function addjsonfunc() {
+      var namesjson = document.getElementById("namejson").value;
+      var result = {};
+      if (namesjson == "") {
+        namesjson = "default";
+      }
+      result["name"] = namesjson;
+      var keyValDIV = document.getElementById("addJson");
+      console.log(keyValDIV.children.length);
+      for (var i = 0; i < keyValDIV.children.length; i++) {
+        var keys = document.getElementById("jsonNameskey" + i).value;
+        var values = document.getElementById("jsonNameValue" + i).value;
+        result[keys] = values;
+      }
+      document.getElementById("addJson").innerHTML = "";
+      console.log(result);
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+        }
+      }
+      xmlhttp.open("PUT", urlProfile, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send(JSON.stringify(result));
+    }
+    var count = 0;
+
+    function addDiv() {
+
+      var newKEYdiv = document.createElement("div");
+      newKEYdiv.id = "newKEYdiv" + count;
+      newKEYdiv.innerHTML = "<label for=\"jsonName\">key : </label><input type=\"text\" id=\"jsonNameskey" + count + "\"><label for=\"jsonName\">value : </label><input type=\"text\" id=\"jsonNameValue" + count +
+        "\"><button onclick=\"delKEYdiv(this)\">一</button>";
+      count++;
+      document.getElementById("addJson").appendChild(newKEYdiv);
+    }
+
+    function delKEYdiv(self) {
+      // alert(self.parentNode.parentNode.id);
+      var parents = document.getElementById(self.parentNode.parentNode.id)
+      parents.removeChild(self.parentNode);
+      // self.parentnode.parentNode.removeChild(self.parentNode.id);
+    }
+
+    function loadJob(){
+      var job0 = {}
+      job0["profile"] = "turner-edl-mp4-240p";
+      job0["output"] = "240p_DS007823.mp4";
+      var job3 = {}
+      job3["profile"] = "turner-edl-mp4-1080p";
+      job3["output"] = "1080p_DS007823.mp4";
+      var job1 = {}
+      job1["profile"] = "turner-edl-mp4-480p";
+      job1["output"] = "480p_DS007823.mp4";
+      var job2 = {}
+      job2["profile"] = "turner-edl-mp4-720p";
+      job2["output"] = "720p_DS007823.mp4";
+      var job4 = {}
+      job4["profile"] = "turner-edl-mxf-xdcam-50m";
+      job4["output"] = "50m_DS007823.mp4";
+
+      var str="";
+      for(var i = 0;i < 5;i++){
+        str += "<div id=\"job"+i+"\" class=\"col-xs-12 col-sm-6 col-lg-3 col-md-4\">";
+        var job = eval("("+"job"+i+")");
+        str+="<h3>"+job["profile"]+"</h3>";
+        for(var key in job){
+          str+= "<div class=\"control-group panel panel-primary\"><div class=\"panel-heading\"><label class=\"panel-title control-label\" for=\""+key+"\">"+key+" : </label></div><div class=\"panel-body controls\"><input type=\"text\" class=\"form-control\" id="+key+i+" value=\""+job[key]+"\"></div></div><br />"
+        }
+        str+="</div>";
+      }
+      document.getElementById('formdiv').innerHTML = str;
+    }
+    function getJob(){
+      for(var i = 0;i < 5;i++){
+        var job = {};
+        var CommonPart = document.getElementById("CommonPart");
+        // console.log(CommonPart.children[3].children[1].children[0].value);
+        for(var k = 1;k < CommonPart.children.length;k+=2){
+          var key = CommonPart.children[k].children[1].children[0].id;
+          var value = CommonPart.children[k].children[1].children[0].value;
+          job[key] = value;
+        }
+        console.log(job);
+        var inputParentNodes = document.getElementById("job"+i);
+        for(var j = 1;j < inputParentNodes.children.length;j+=2){
+          var key = (inputParentNodes.children[j].children[1].children[0].id).split(i)[0];
+          var value = inputParentNodes.children[j].children[1].children[0].value;
+          job[key] = value;
+        }
+        loadXMLDocs(job);
+      }
+    }
+    function loadXMLDocs(job) {
+      var url = "https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/job";
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          console.log(dataobj)
+        }
+      }
+      xmlhttp.open("POST", url, true);
+      xmlhttp.setRequestHeader("Content-Type", "application/json");
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send(JSON.stringify(job));
+    }
+
+  </script>
+  <style type="text/css">
+    #tableSort th {
+      background-color: rgb(51, 105, 232);
+      color: white;
+      font-size: 1.2em;
+      min-width: 150px;
+    }
+    #tableSort th span {
+      padding-right: 10px;
+    }
+    a {
+      text-decoration: none;
+    }
+    #jsonContent {
+      margin-left: 300px;
+    }
+    .input-group-addon{
+      min-width:150px;
+    }
+    .panel{
+      margin-bottom: -22px;
+    }
+    #myTab li{
+      width:100px;
+      text-align:center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <ul id="myTab" class="nav nav-tabs">
+      <li class="active"><a href="#jobs" data-toggle="tab">Jobs</a></li>
+      <li><a href="#Jobpost" data-toggle="tab">Jobpost</a></li>
+      <li><a href="#profile" data-toggle="tab">profile</a></li>
+      <li><a href="#callbacks" data-toggle="tab">callback</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+      <div class="tab-pane fade in active" id="jobs">
+        <div id="myDivJob"></div>
+      </div>
+      <div class="tab-pane fade" id="profile">
+        <div class="jsonContents row" style="float:left;">
+          <div id="myDivProfile" style="float:left;height:300px;width:200px;"></div>
+          <div id="jsonContent"></div>
+        </div>
+        <div style="float:right;">
+          <label for="jsonName">Json Name : </label>
+          <input type="text" id="namejson">
+          <button type="button" onclick="addjsonfunc()">PUT</button>
+          <button type="button" onclick="addDiv()">Add key</button>
+          <button type="button" style="opacity:0;">DEL</button>
+          <button style="opacity:0;">一</button>
+          <div id="addJson"></div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="Jobpost">
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 col-lg-3 col-md-4" id="CommonPart">
+            <h3>Common parts of job</h3>
+            <div class="control-group panel panel-primary">
+              <div class="panel-heading"><label class="panel-title control-label">s3_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="s3_input" value="s3://vaas-03-turner-dev/To Dao Lab"></div>
+            </div><br />
+            <div class="control-group panel panel-primary">
+              <div class="panel-heading"><label class="panel-title control-label">edl_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="edl_input" value="DS007823.edl"></div>
+            </div><br />
+            <div class="control-group panel panel-primary">
+              <div class="panel-heading"><label class="panel-title control-label">src_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="src_input" value="DS007823.mxf"></div>
+            </div><br />
+            <div class="control-group panel panel-primary">
+              <div class="panel-heading"><label class="panel-title control-label">opening_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="opening_input" value="CN_Opening_Bumper_HD.mxf"></div>
+            </div><br />
+            <div class="control-group panel panel-primary">
+              <div class="panel-heading"><label class="panel-title control-label">closing_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="closing_input" value="CN_Opening_Bumper_HD.mxf"></div>
+            </div><br />
+            <div class="control-group panel panel-primary">
+              <div class="panel-heading"><label class="panel-title control-label">logo_input : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="logo_input" value="CN_side_by_side_logo_bug_HD.png"></div>
+            </div><br />
+            <div class="control-group panel panel-primary">
+              <div class="panel-heading"><label class="panel-title control-label">s3_output : </label></div>
+              <div class="panel-body controls"><input type="text" class="form-control" id="s3_output" value="s3://vaas-03-turner-dev/output/20190310/demo"></div>
+            </div><br />
+          </div>
+          <div class="col-xs-12 col-sm-6 col-lg-9 col-md-8">
+            <div class="row">
+              <form class="bs-example bs-example-form" role="form" id="formdiv">
+              </form>
+              <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group"  style="margin-top:20px;margin-left:20px;">
+                    <button type="button" class="btn btn-default"  onclick="getJob()">SUBMIT</button>
+                 </div>
+              </div>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="callbacks">
+        <p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。</p>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    (function($) {
+      $.extend($, {
+        sortTable: {
+          sort: function(tableId, Idx) {
+            var table = document.getElementById(tableId);
+            var tbody = table.tBodies[0];
+            var tr = tbody.rows;
+
+            var trValue = new Array();
+            for (var i = 0; i < tr.length; i++) {
+              trValue[i] = tr[i];
+            }
+            console.log(trValue);
+            if (tbody.sortCol == Idx) {
+              trValue.reverse();
+            } else {
+              trValue.sort(function(tr1, tr2) {
+                var value1 = tr1.cells[Idx].innerHTML;
+                var value2 = tr2.cells[Idx].innerHTML;
+                return value1.localeCompare(value2);
+              });
+            }
+            var fragment = document.createDocumentFragment();
+            for (var i = 0; i < trValue.length; i++) {
+              fragment.appendChild(trValue[i]);
+            }
+            tbody.appendChild(fragment);
+            tbody.sortCol = Idx;
+          }
+        }
+      });
+    })(jQuery);
+  </script>
+</body>
+</html>

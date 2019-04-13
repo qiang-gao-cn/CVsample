@@ -1,0 +1,98 @@
+
+python规则：
+使用空格和tab进行空行
+限制为79个字符
+允许在二元运算符之前或之后中断
+# Yes: easy to match operators with operands
+income = (gross_wages
+          + taxable_interest
+          + (dividends - qualified_dividends)
+          - ira_deduction
+          - student_loan_interest)
+使用两个空行环绕顶级函数和类定义。
+使用python3的utf-8，标识符为ASCII 和python2的ASCII
+进口分开
+import os 
+import sys
+子进程的导入：导入总是放在文件的顶部from subprocess import Popen, PIPE
+应按以下顺序对导入进行分组：
+标准库导入。
+相关的第三方进口。
+本地应用程序/库特定导入。
+您应该在每组导入之间添加一个空行。
+Module Level Dunder Names ：
+from __future__ import barry_as_FLUFL
+__all__, __author__, __version__,
+在Python中，单引号字符串和双引号字符串是相同的
+避免无关的空格：
+1仅靠括号：
+spam(ham[1], {eggs: 2})
+2在尾随逗号和后续括号之间。
+foo = (0,)
+3在逗号，分号或冒号之前：
+if x == 4: print x, y; x, y = y, x
+
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], 
+spam(1)
+dct['key'] = lst[index]
+始终围绕这些二元运算符，两边都有一个空格：赋值（=），扩充赋值（+ =，- = 等），比较（==，<，>，！=，<>，<=， > =，in，not in，is，not not），布尔（和， 或者，不是）。
+函数注释应该使用冒号的常规规则，并且如果存在，则始终在- >箭头周围留出空格。
+def munge(input: AnyStr): ...
+def munge() -> AnyStr: ...
+将参数注释与默认值组合时，请在=符号周围使用空格
+def munge(sep: AnyStr = None)
+通常不鼓励使用复合语句（同一行上的多个语句）。
+if foo == 'blah':
+    do_blah_thing()
+do_one()
+do_two()
+do_three()
+逗号：
+FILES = [ 
+    'setup.cfg'，
+    'tox.ini'，
+    ] 
+评论应该是完整的句子。第一个单词应该大写，除非它是一个以小写字母开头的标识符（永远不会改变标识符的情况！）。
+块注释的每一行都以＃和单个空格开头（除非它是注释中的缩进文本）。
+切勿将字符'l'（小写字母el），'O'（大写字母）或'I'（大写字母L）用作单个字符变量名称。
+在某些字体中，这些字符与数字1和0无法区分。当试图使用'l'时，请使用'L'。
+模块应该有简短的全小写名称
+引入的类型变量的名称通常应使用CapWords
+建议将后缀_co或_contra添加到用于相应声明协变或逆变行为的变量中：
+VT_co = TypeVar（'VT_co'，covariant = True）
+函数名称应为小写，并根据需要用下划线分隔
+始终使用self作为实例方法的第一个参数。
+始终使用cls作为类方法的第一个参数
+常量通常在模块级别定义，并以全部大写字母书写，下划线分隔单词。示例包括 MAX_OVERFLOW和TOTAL。
+模块级变量，类和实例变量以及局部变量的注释在冒号后应该有一个空格。冒号前不应有空格；如果赋值在右侧，则等号在两侧应该只有一个空格
+lambda expression ：：：def f(x): return 2*x
+捕获异常：
+try:
+    value = collection[key]
+except KeyError:
+    return key_not_found(key)
+else:
+    return handle_value(value)
+当资源是特定代码段的本地资源时，请使用 with语句以确保在使用后立即可靠地清除它。try / finally语句也是可以接受的。
+with conn.begin_transaction():
+    do_stuff_in_transaction(conn)
+
+return:
+def foo(x):
+    if x >= 0:
+        return math.sqrt(x)
+    else:
+        return None
+
+def bar(x):
+    if x < 0:
+        return None
+    return math.sqrt(x)
+使用'.startswith（）和''。endswith（）而不是字符串切片来检查前缀或后缀。
+if foo.startswith('bar'):
+检查对象是否为字符串时if isinstance(obj, basestring):
+序列：
+if not seq:
+     if seq:
+不要使用==将布尔值与True或False进行比较
+

@@ -1,0 +1,50 @@
+main(event,context):
+1.isS3
+       create_job(job):
+	send_sqs(job);
+	update_db(job);
+2.isGateway
+       post/put:write_s3(job,key):
+		getenv():
+	post:read_s3(key):
+		getenv():
+	put:update_db(req):
+		getenv():
+		parse_dyanmodb_fmt():
+	      get_sqs():
+		getenv():
+	get:get_sqs():
+		getenv():
+	      search_job():
+		getenv():
+		parse_dyanmodb_fmt():
+	      read_s3(key):
+		getenv():
+	      list_s3(key):
+		getenv():
+	delete:get_sqs()
+3.returnResponse
+
+
+launch_ec2():
+	getenv():
+
+
+
+
+
+
+1.����  postman create collention get   post(no work)
+2.ui    table
+3.�����⼰ʱ�㱨
+
+1.postman get
+	get job: https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/job?JobID=20190308043213-253d50e8415b11e9a7b8620b13cd1599-0-0
+	get profile: https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/profile?name=turner-edl
+2.ui ����Ҫϸ��
+3.profile��
+post:
+
+
+
+jobpost:

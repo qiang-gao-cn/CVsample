@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>previous and next</title>
+  <!-- <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+  <script type="text/javascript">
+    function loadXMLdoc(start,end) {
+      //var url = "https://hzl57loa14.execute-api.ap-southeast-1.amazonaws.com/prod/vaas-am730";
+      var url = "note.json";
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+
+          function sortJson(array, key, order) {
+            return array.sort(function(index, next) {
+              var a = index[key];
+              var b = next[key];
+              if ("asc" == order) {
+                return ((a > b) ? -1 : ((a < b) ? 1 : 0));
+              } else {
+                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+              }
+            });
+          }
+          sortJson(dataobj.items, 'JobId', 'asc');
+          for (var i = 0; i < (dataobj["items"].length)/10; i++) {
+            // <li class="page-item"  onclick="changePage(this)"><a class="page-link" href="#">1</a></li>
+            var ulobj = document.getElementById('pageUl');
+            var liobj = document.createElement("li");
+            var aobj = document.createElement("a");
+            liobj.id = "liobj" + i;
+            liobj.className = "page-item";
+            aobj.className = "page-link";
+            aobj.innerText = i+1;
+            liobj.appendChild(aobj);
+            ulobj.appendChild(liobj);
+            document.getElementById("liobj"+i).onclick = function () {
+              // setPageDisplay(start,end);
+              changePage(this);
+            }
+          }
+          var str = "";
+          str += "<table><tr id=\"displayBlockTr\">";
+          str += "<th>JobId</th><th>Input</th><th>VideoSize</th><th>State</th><th>Progress</th><th>Speed</th><th>Duration</th><th>Output</th>" +
+            "<th>Format</th><th>LastUpdate</th><th>AudioBitrate</th><th>VideoBitrate</th></tr>";
+          for (var i = 0; i < dataobj["items"].length; i++) {
+            str += "<tr><td>" + dataobj["items"][i]["JobId"] + "</td><td>" + dataobj["items"][i]["Input"] + "</td><td>" + dataobj["items"][i]["VideoSize"] +
+              "</td><td>" + dataobj["items"][i]["State"] + "</td><td>" + dataobj["items"][i]["Progress"] + "</td><td>" +
+              dataobj["items"][i]["Speed"] + "</td><td>" + dataobj["items"][i]["Duration"] + "</td><td>" + dataobj["items"][i]["Output"] + "</td><td>" +
+              dataobj["items"][i]["Format"] + "</td><td>" + dataobj["items"][i]["LastUpdate"] + "</td><td>" +
+              dataobj["items"][i]["AudioBitrate"] + "</td><td>" +
+              dataobj["items"][i]["VideoBitrate"] + "</td>";
+          }
+          str += "</tr></table>";
+          document.getElementById('contentDiv').innerHTML = str;
+          setPageDisplay(start,end);
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "ZFazSV91M77Mx83P8qIQRahntdAKzZ4a3w1Qp0XD");
+      xmlhttp.send();
+    }
+    function setPageDisplay(start,end) {
+      var trobj = document.getElementsByTagName('tr');
+      var len = trobj.length;
+      for(var i = 1; i < len;i++){
+        if( i >= start && i < end){
+           trobj[i].id = "displayBlockTr";
+        }else {
+           trobj[i].id = "displayNoneTr";
+        }
+      }
+    }
+    function changePage(self) {
+
+      var num = self.innerText;
+      if(num == 1){
+        var start = 0;
+        var end = 11;
+      }else {
+        var start = 1+(num - 1)*10;
+        var end = 1+(num*10);
+      }
+      setPageDisplay(start,end);
+    }
+  </script>
+  <style>
+    #displayBlockTr{
+      display:table-row;
+    }
+    #displayNoneTr{
+      display:none;
+    }
+    table{
+      width:100%;
+    }
+    ul{
+      position: absolute;
+      right:20px;
+    }
+    ul li{
+      float:left;
+      list-style: none;
+      width:50px;
+      height:30px;
+      text-align: center;
+      line-height: 30px;
+      border:1px solid #dee2e6;
+    }
+    ul li:hover{
+      background:#dee2e6;
+      color: white;
+    }
+    ul li:first-child{
+      border-radius: 5px 0 0 5px;
+    }
+    ul li:last-child{
+      border-radius: 0 5px 5px 0;
+    }
+    h1{
+      text-align: center;
+    }
+    th,td{
+      height: 50px;
+    }
+    table tr:nth-child(odd){
+      background: #ddd;
+    }
+    th{
+      background: #0080ff;
+      color: white;
+    }
+    tr:hover{
+      background: #ddd;
+    }
+  </style>
+</head>
+
+<body onload="loadXMLdoc(0,11)" id="initLoad">
+  <div class="container-fluid">
+    <div class="head">
+      <h1>Report</h1>
+    </div>
+    <div class="contentDiv" id="contentDiv">
+
+    </div>
+    <div class="page">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end" id="pageUl">
+        </ul>
+      </nav>
+    </div>
+  </div>
+</body>
+
+</html>

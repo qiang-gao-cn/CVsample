@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript">
+    //var url = "https://hzl57loa14.execute-api.ap-southeast-1.amazonaws.com/prod/vaas-am730";
+    var url = "note.json";
+    var xmlhttp;
+    if (window.XMLHttpRequest) {
+      xmlhttp = new XMLHttpRequest();
+    } else {
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var dataobj = JSON.parse(xmlhttp.responseText);
+
+        function sortJson(array, key, order) {
+          return array.sort(function(index, next) {
+            var a = index[key];
+            var b = next[key];
+            if ("asc" == order) {
+              return ((a > b) ? -1 : ((a < b) ? 1 : 0));
+            } else {
+              return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+            }
+          });
+        }
+        sortJson(dataobj.items, 'JobId', 'asc');
+
+        var str = "";
+        str += "<table border=\"1\"><tr>";
+        str += "<th>JobId</th><th>Input</th><th>VideoSize</th><th>State</th><th>Progress</th><th>Speed</th><th>Duration</th><th>Output</th>" +
+          "<th>Format</th><th>LastUpdate</th><th>AudioBitrate</th><th>VideoBitrate</th></tr>";
+        for (var i = 0; i < dataobj["items"].length; i++) {
+          str += "<tr><td>" + dataobj["items"][i]["JobId"] + "</td><td>" + dataobj["items"][i]["Input"] + "</td><td>" + dataobj["items"][i]["VideoSize"] +
+            "</td><td>" + dataobj["items"][i]["State"] + "</td><td>" + dataobj["items"][i]["Progress"] + "</td><td>" +
+            dataobj["items"][i]["Speed"] + "</td><td>" + dataobj["items"][i]["Duration"] + "</td><td>" + dataobj["items"][i]["Output"] + "</td><td>" +
+            dataobj["items"][i]["Format"] + "</td><td>" + dataobj["items"][i]["LastUpdate"] + "</td><td>" +
+            dataobj["items"][i]["AudioBitrate"] + "</td><td>" +
+            dataobj["items"][i]["VideoBitrate"] + "</td>";
+        }
+        str += "</tr></table>";
+        document.getElementById('contentDiv').innerHTML = str;
+      }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("x-api-key", "ZFazSV91M77Mx83P8qIQRahntdAKzZ4a3w1Qp0XD");
+    xmlhttp.send();
+  </script>
+  <style type="text/css">
+    table td {
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="contentDiv"></div>
+</body>
+
+</html>

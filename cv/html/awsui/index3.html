@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript">
+  //设置input date的默认值
+  function loadDate(){
+    //确定当天的日期
+    var d = new Date();
+    var month = (d.getMonth() + 1) >= 10 ? (d.getMonth() + 1) : ('0' + (d.getMonth() + 1));
+    var day = d.getDate() >= 10 ? d.getDate() : ('0' + d.getDate());
+    var year = d.getFullYear();
+    var endDate = year + "-" + month + "-" + day;
+    var x = document.getElementsByTagName('input')[0];
+    x.setAttribute("value", endDate);
+  }
+  function getDate(self){
+    var d = new Date();
+    var ipt_Val = self.value;
+    var iptVal = Date.parse(new Date(ipt_Val.replace(/-/g, "/")));
+
+    var time = "2018-12-20";
+    var initVal = Date.parse(new Date(time.replace(/-/g, "/")));
+
+    var now = d.getTime();
+
+    if(iptVal < initVal || iptVal > now){
+      alert("please choose date from 2018-12-20 to now!!");
+    }
+  }
+  function displayResult(){
+    var x = document.getElementsByTagName('input')[0];
+    var d = new Date();
+    var ipt_Val = x.value;
+    var iptVal = Date.parse(new Date(ipt_Val.replace(/-/g, "/")));
+
+    var time = "2018-12-20";
+    var initVal = Date.parse(new Date(time.replace(/-/g, "/")));
+
+    var now = d.getTime();
+
+    if(iptVal < initVal || iptVal > now){
+      alert("please choose date from 2018-12-20 to now!!");
+    }else{
+        loadXMLDoc(ipt_Val);
+    }
+  }
+  //load ajax method get
+  function loadXMLDoc(dates) {
+    // var url = "https://2g5p8jx5q5.execute-api.ap-southeast-1.amazonaws.com/default/vaas-am730-cf-report?date=" + dates;
+    var url = "jsonn/2019-01-15";
+    var xmlhttp;
+    if (window.XMLHttpRequest) {
+      //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+      xmlhttp = new XMLHttpRequest();
+    } else {
+      // IE6, IE5 浏览器执行代码
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var dataobj = JSON.parse(xmlhttp.responseText);
+        //进行排序
+        dataobj.sort(function(a, b) {
+          return b.played_num - a.played_num;
+        })
+        //创建数据表格
+        var str = "";
+        str += "<table id=\"INFO\"><tr>";
+        str += "<th>Video name</th><th>DATE</th><th>Played Time</th><th>Played Num</th><th>OSX Desktop</th><th>IOS</th><th>Linux Desktop</th><th>Window Desktop</th><th>Android</th><th>Bot</th>";
+        for (var i = 0; i < dataobj.length; i++) {
+          str += "</tr><tr><td>" + dataobj[i].uri + "</td>";
+          str += "<td>" + dataobj[i].date + "</td>";
+          str += "<td>" + dataobj[i].played_sec + "</td>";
+          str += "<td>" + dataobj[i].played_num + "</td>";
+          if (dataobj[i].ua_OSX_Desktop == undefined) {
+            dataobj[i].ua_OSX_Desktop = 0;
+          }
+          str += "<td>" + dataobj[i].ua_OSX_Desktop + "</td>";
+          if (dataobj[i].ua_iOS == undefined) {
+            dataobj[i].ua_iOS = 0;
+          }
+          str += "<td>" + dataobj[i].ua_iOS + "</td>";
+          if (dataobj[i].ua_Linux_Desktop == undefined) {
+            dataobj[i].ua_Linux_Desktop = 0;
+          }
+          str += "<td>" + dataobj[i].ua_Linux_Desktop + "</td>";
+          if (dataobj[i].ua_Windows_Desktop == undefined) {
+            dataobj[i].ua_Windows_Desktop = 0;
+          }
+          str += "<td>" + dataobj[i].ua_Windows_Desktop + "</td>";
+          if (dataobj[i].ua_Android == undefined) {
+            dataobj[i].ua_Android = 0;
+          }
+          str += "<td>" + dataobj[i].ua_Android + "</td>";
+          if (dataobj[i].ua_bot == undefined) {
+            dataobj[i].ua_bot = 0;
+          }
+          str += "<td>" + dataobj[i].ua_bot + "</td></tr>";
+        }
+        str += "</table>";
+        document.getElementById("myDiv").innerHTML = str;
+      }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("x-api-key", "S7VhXUVH6U1Cy2OH6H2h37rAyA47I2V39inel5Rw");
+    xmlhttp.send();
+  }
+  //show info total
+  function displayInfo() {
+    var divobj = document.getElementById("myDiv");
+    var trobj = document.getElementsByTagName("tr");
+    var ua_OSX_Desktop_sum = 0,
+      ua_bot_sum = 0,
+      played_sec_sum = 0,
+      ua_Linux_Desktop_sum = 0,
+      played_num_sum = 0,
+      ua_iOS_sum = 0,
+      ua_Windows_Desktop_sum = 0,
+      ua_Android_sum = 0;
+    //循环计算各项的值
+    for (var i = 1; i < trobj.length; i++) {
+      ua_OSX_Desktop_sum += parseInt(trobj[i].childNodes[4].innerHTML);
+      ua_bot_sum += parseInt(trobj[i].childNodes[9].innerHTML);
+      played_sec_sum += parseInt(trobj[i].childNodes[2].innerHTML);
+      ua_Linux_Desktop_sum += parseInt(trobj[i].childNodes[6].innerHTML);
+      played_num_sum += parseInt(trobj[i].childNodes[3].innerHTML);
+      ua_iOS_sum += parseInt(trobj[i].childNodes[5].innerHTML);
+      ua_Windows_Desktop_sum += parseInt(trobj[i].childNodes[7].innerHTML);
+      ua_Android_sum += parseInt(trobj[i].childNodes[8].innerHTML);
+    }
+    divobj.innerHTML = "<table id=\"totalINFO\" >" +
+      "<caption><h2>" + trobj[1].childNodes[1].innerHTML + "</h2></caption>" +
+      "<tr><th>Played Time Total</th><th>Played Num Total</th><th>OSX Desktop Total</th><th>IOS Total</th><th>Linux Desktop Total</th><th>Window Desktop Total</th><th>Android Total</th><th>Bot Total</th></tr>" +
+      "<tr><td>" + played_sec_sum + "</td><td>" + played_num_sum + "</td><td>" + ua_OSX_Desktop_sum + "</td><td>" + ua_iOS_sum + "</td><td>" + ua_Linux_Desktop_sum + "</td><td>" + ua_Windows_Desktop_sum + "</td><td>" + ua_Android_sum + "</td><td>" +
+      ua_bot_sum + "</td></tr></table>";
+
+  }
+
+      function downloadFile() {
+        var x = document.getElementsByTagName('input')[0];
+        var d = new Date();
+        var ipt_Val = x.value;
+        var iptVal = Date.parse(new Date(ipt_Val.replace(/-/g, "/")));
+
+        var time = "2018-12-20";
+        var initVal = Date.parse(new Date(time.replace(/-/g, "/")));
+
+        var now = d.getTime();
+
+        if(iptVal < initVal || iptVal > now){
+          alert("please choose date from 2018-12-20 to now!!");
+        }else{
+          var xmlhttp = new XMLHttpRequest();
+
+          var trobj = document.getElementsByTagName("tr");
+          var divobjs = document.getElementById("myDiv");
+          if(divobjs.childNodes[0].id == "INFO"){
+            var url = ipt_Val + ".csv";
+            var obj = "";
+            for (var i = 0; i < trobj.length; i++) {
+              for(var j = 0;j < trobj[i].childNodes.length;j++){
+                obj += trobj[i].childNodes[j].innerHTML;
+                obj += ",";
+              }
+              obj += "\r\n";
+            }
+            xmlhttp.open("PUT", url, true);
+            xmlhttp.setRequestHeader("x-api-key", "S7VhXUVH6U1Cy2OH6H2h37rAyA47I2V39inel5Rw");
+            xmlhttp.send(obj);
+            // readyState == 4 为请求完成，status == 200为请求陈宫返回的状态
+            xmlhttp.onreadystatechange = function() {
+              if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                console.log(xmlhttp.responseText);
+              }
+            }
+          }
+        }
+      }
+  </script>
+  <style type="text/css">
+    table{text-align: left;}
+    table td{min-width:149px;}
+    table th{background:#56a2cf;color:white;height:40px;}
+    table tr:nth-child(even){
+      background:#eaf3f5;
+    }
+  </style>
+</head>
+
+<body onload="loadDate()">
+  <div id="options">
+    <input type="date" name=""  id="dateIpt" onchange="getDate(this)">
+    <button type="button" onclick="displayResult()">显示详细信息</button>
+    <button type="button" onclick="displayInfo()">详细信息汇总</button>
+    <button type="button" onclick="downloadFile()">下载文件</button>
+  </div>
+  <div id="myDiv"></div>
+</body>
+
+</html>

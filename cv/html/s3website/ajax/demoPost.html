@@ -1,0 +1,66 @@
+<html>
+    <head>
+    <meta charset="utf-8">
+    <title>demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    </head>
+    <body>
+    <div class="container">
+      <form role="form">
+      	<div class="form-group">
+      		<label for="name">roomId</label>
+      		<input type="text" class="form-control" id="roomId"
+      			   placeholder="请输入roomId">
+      	</div>
+        <div class="form-group">
+          <label for="name">eventId</label>
+          <input type="text" class="form-control" id="eventId"
+               placeholder="请输入eventId">
+        </div>
+        <div class="form-group">
+          <label for="name">wowza_url</label>
+          <input type="text" class="form-control" id="wowza_url"
+               placeholder="请输入wowza_url">
+        </div>
+        <div class="form-group">
+          <label for="name">S3_path</label>
+          <input type="text" class="form-control" id="S3_path"
+               placeholder="请输入S3_path">
+        </div>
+      	<button type="submit" class="btn btn-default putbtn">提交</button>
+      	<button type="reset" class="btn btn-default">reset</button>
+      </form>
+
+
+    </div>
+    </body>
+        <script type="text/javascript">
+            document.querySelector(".putbtn").onclick= function(){
+                var xmlhttp = new XMLHttpRequest();
+          	    var url="https://tfrba4foa0.execute-api.ap-southeast-1.amazonaws.com/default/api/startrecord/";
+          	    var obj = {
+                          push:Array.prototype.push
+                      };
+                var inputObj = document.getElementsByTagName("input");
+                for (var i = 0; i < inputObj.length; i++){
+                  var idObj = document.getElementsByTagName("input")[i].getAttribute("id");
+                  var valObj = document.getElementById(idObj).value;
+                  obj.push((idObj+":"+valObj));
+                }
+                alert(obj);
+                xmlhttp.open("POST",url, true);
+                xmlhttp.setRequestHeader("x-api-key", "nrkzi8zU8c6ICLqeROQZd7hcCaIv6shy9KrGsDZY");
+                xmlhttp.send(JSON.stringify(obj));
+                xmlhttp.onreadystatechange = function(){
+                    if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                        console.log(xmlhttp.responseText);
+                    }
+                }
+            };
+        </script>
+</html>

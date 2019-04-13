@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>ref</title>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.1.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
+    <script src="https://npmcdn.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
+    <!-- prop验证 -->
+    <script src="https://cdn.bootcss.com/prop-types/15.6.1/prop-types.js"></script>
+  </head>
+  <body>
+    <div id="example"></div>
+    <script type="text/babel">
+    class LightningCounter extends React.Component {
+      render(){
+        return (
+            <h1>hello world</h1>
+        );
+      }
+    }
+    class LightningCounterDisplay extends React.Component{
+      render(){
+        var divStyle = {
+          width:250,
+          textAlign:"center",
+          backgroundColor:"black",
+          padding:40,
+          fontFamily:"sans-serif",
+          color:"white",
+          borderRadius:10
+        };
+        return(
+          <div style={divStyle}>
+            <LightningCounter />
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(
+      <LightningCounterDisplay />,
+      document.getElementById('example')
+    );
+    </script>
+  </body>
+</html>

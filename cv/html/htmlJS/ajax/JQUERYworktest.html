@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <style type="text/css">
+
+        .p1{
+            font-size: 14px;
+            color: #000;
+        }
+        .p2{
+            font-size: 12px;
+            color: #b0b0b0;
+        }
+        .p3{
+            font-size: 14px;
+            color: #ff5f19;
+        }
+        .product{
+            width:100%;
+            position: relative;
+            margin: 20px 0 5px 0;
+            height: 100px;
+            background: #fafafa;
+        }
+
+        .img{
+            width: 100px;
+            height: 100px;
+            float: left;
+            margin-right: 20px;
+        }
+        .p{
+            display:inline-block;
+            float:left;
+            width:50%;
+            margin-top:6px;
+            font-family: Microsoft YaHei;
+        }
+        .p1{
+            margin-top:16px;
+        }
+
+
+
+    </style>
+    <script type="text/javascript">
+
+        $(function(){
+            $.ajax({
+                type: "POST",
+                url: "json/State.JSON",
+                dataType: "json",
+　　　　　　　　　 success: function(result){
+                    addBox(result);
+                }
+            });
+            /*$.get("item.json",function(result){
+                //result数据添加到box容器中;
+                addBox(result);
+            });*/
+        });
+        function addBox(result){
+            $.each(result,function(index,obj){
+                $("#box").append("<div class='product'>"+
+                    "<div><img class='img' src="+obj['url']+"/></div>"+
+                    "<div class='p1 p'>"+obj['Progress']+"</div>"+
+                    "<div class='p2 p'>"+obj['Speed']+"</div>"+
+                    "<div class='p3 p'>"+obj['Bitrate']+"</div>"+
+                    "</div>");
+            });
+        }
+    </script>
+</head>
+<body>
+<div id="box">
+</div>
+</body>
+</html>

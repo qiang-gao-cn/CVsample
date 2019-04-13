@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript">
+function loadXMLDoc()
+{
+ var xmlhttp;
+ if (window.XMLHttpRequest)
+ {
+   //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+   xmlhttp=new XMLHttpRequest();
+ }
+ else
+ {
+   // IE6, IE5 浏览器执行代码
+   xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ }
+
+ xmlhttp.onreadystatechange=function()
+ {
+   if (xmlhttp.readyState==4 && xmlhttp.status==200)
+   {
+     var dataobj = JSON.parse(xmlhttp.responseText);
+     console.log(dataobj[3].uri);
+     console.log(dataobj.length);
+     var str="";
+     str+="<table border=\"1\"><tr>";
+     str+="<th>Video name</th><th>DATE</th><th>Played Time</th><th>Played Num</th><th>OSX Desktop</th><th>IOS</th><th>Linux Desktop</th><th>Window Desktop</th><th>Android</th><th>Bot</th>";
+     for(var i=0;i<dataobj.length;i++){
+       str+="</tr><tr><td>"+dataobj[i].uri+"</td>";
+       str+="<td>"+dataobj[i].date+"</td>";
+       str+="<td>"+dataobj[i].played_sec+"</td>";
+       str+="<td>"+dataobj[i].played_num+"</td>";
+       if(dataobj[i].ua_OSX_Desktop == undefined){
+         dataobj[i].ua_OSX_Desktop = " ";
+       }
+       str+="<td>"+dataobj[i].ua_OSX_Desktop+"</td>";
+       if(dataobj[i].ua_iOS == undefined){
+         dataobj[i].ua_iOS = " ";
+       }
+       str+="<td>"+dataobj[i].ua_iOS+"</td>";
+       if(dataobj[i].ua_Linux_Desktop == undefined){
+         dataobj[i].ua_Linux_Desktop = " ";
+       }
+       str+="<td>"+dataobj[i].ua_Linux_Desktop+"</td>";
+       if(dataobj[i].ua_Windows_Desktop == undefined){
+         dataobj[i].ua_Windows_Desktop = " ";
+       }
+       str+="<td>"+dataobj[i].ua_Windows_Desktop+"</td>";
+       if(dataobj[i].ua_Android == undefined){
+         dataobj[i].ua_Android = " ";
+       }
+       str+="<td>"+dataobj[i].ua_Android+"</td>";
+       if(dataobj[i].ua_bot == undefined){
+         dataobj[i].ua_bot = " ";
+       }
+       str+="<td>"+dataobj[i].ua_bot+"</td></tr>";
+     }
+     str+="</table>";
+     document.getElementById("myDiv").innerHTML= str;
+   }
+ }
+ // "https://2g5p8jx5q5.execute-api.ap-southeast-1.amazonaws.com/default/vaas-am730-cf-report?date=2019-01-15"
+ xmlhttp.open("GET","https://2g5p8jx5q5.execute-api.ap-southeast-1.amazonaws.com/default/vaas-am730-cf-report?date=2019-01-15",true);
+ xmlhttp.setRequestHeader("x-api-key","S7VhXUVH6U1Cy2OH6H2h37rAyA47I2V39inel5Rw");
+ xmlhttp.send();
+}
+</script>
+</head>
+<body>
+<div id="options">
+
+</div>
+<div id="myDiv"></div>
+</body>
+</html>

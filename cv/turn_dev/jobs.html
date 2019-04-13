@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" /> -->
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    //load ajax method get
+    function loadXMLDoc() {
+      var url = " https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/job";
+      var jobContent = [
+      "JobID","LastUpdate","status","input","output","profile","video_height","video_width",
+      "video_bitrate","video_codec","audio_bitrate","audio_codec","closing_input","speed","src_input",
+      "s3_input","s3_output","duration","edl_input","end_cb","format","ini_cb","logo_input",
+      "opening_input","output_time","progress"];
+
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          //创建数据表格
+          var str = "";
+          str += "<table  class=\"sortable table table-hover table-striped table-bordered\" id=\"INFO\"><tr>";
+          for(var i = 0; i < jobContent.length;i++){
+            if(jobContent[i] == "LastUpdate"){
+              str += "<th id=\"up\" onclick=\"changeSort(this)\"><span class=\"glyphicon glyphicon-chevron-down\"></span>"+jobContent[i]+"</th>";
+            }else{
+              str += "<th><span class=\"glyphicon glyphicon-chevron-down\"></span>"+jobContent[i]+"</th>";
+            }
+          }
+          str += "</tr>";
+          for (var i = 0; i < dataobj.items.length; i++) {
+            str += "<tr>";
+            for(var j = 0; j < jobContent.length;j++){
+              if(dataobj.items[i][jobContent[j]] == "" || dataobj.items[i][jobContent[j]] == "null" || dataobj.items[i][jobContent[j]] == undefined){
+                dataobj.items[i][jobContent[j]] = "N/A";
+              }
+              str += "<td>" + dataobj.items[i][jobContent[j]] + "</td>";
+            }
+            str += "</tr>";
+          }
+          str += "</table>";
+          document.getElementById("myDiv").innerHTML = str;
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send();
+    }
+
+
+  </script>
+  <style type="text/css">
+    #INFO th{
+      background-color: rgb(51, 105, 232);
+      color:white;
+      font-size: 1.2em;
+      min-width: 150px;
+    }
+    #INFO th span{
+      padding-right: 10px;
+    }
+  </style>
+</head>
+
+<body onload="loadXMLDoc()">
+  <div class="container-fluid">
+    <div id="myDiv">
+
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>自定义表格排序(JS)</title>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript">
+    function loadXMLdoc(start, end) {
+      //var url = "https://hzl57loa14.execute-api.ap-southeast-1.amazonaws.com/prod/vaas-am730";
+      var url = "note.json";
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          // sortJson(dataobj.items, 'JobId', 'asc');
+          for (var i = 0; i < (dataobj["items"].length) / 10; i++) {
+            // <li class="page-item"  onclick="changePage(this)"><a class="page-link" href="#">1</a></li>
+            var ulobj = document.getElementById('pageUl');
+            var liobj = document.createElement("li");
+            var aobj = document.createElement("a");
+            liobj.id = "liobj" + i;
+            liobj.className = "page-item";
+            aobj.className = "page-link";
+            aobj.innerText = i + 1;
+            liobj.appendChild(aobj);
+            ulobj.appendChild(liobj);
+            document.getElementById("liobj" + i).onclick = function() {
+              // setPageDisplay(start,end);
+              changePage(this);
+            }
+          }
+          var strth = "";
+          strth += "<th id=\"defaultSort\" onclick=\"$.sortTable.sort('tableSort',0)\" style=\"cursor: pointer;\">JobId</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',1)\" style=\"cursor: pointer;\">Input</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',2)\" style=\"cursor: pointer;\">VideoSize</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',3)\" style=\"cursor: pointer;\">State</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',4)\" style=\"cursor: pointer;\">Progress</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',5)\" style=\"cursor: pointer;\">Speed</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',6)\" style=\"cursor: pointer;\">Duration</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',7)\" style=\"cursor: pointer;\">Output</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',8)\" style=\"cursor: pointer;\">Format</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',9)\" style=\"cursor: pointer;\">LastUpdate</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',10)\" style=\"cursor: pointer;\">AudioBitrate</th>" +
+            "<th onclick=\"$.sortTable.sort('tableSort',11)\" style=\"cursor: pointer;\">VideoBitrate</th></tr>";
+          document.getElementById('tableSort').childNodes[1].innerHTML = strth;
+          var str = "";
+
+          for (var i = 0; i < dataobj["items"].length; i++) {
+            str += "<tr><td>" + dataobj["items"][i]["JobId"] + "</td><td>" + dataobj["items"][i]["Input"] + "</td><td>" + dataobj["items"][i]["VideoSize"] +
+              "</td><td>" + dataobj["items"][i]["State"] + "</td><td>" + dataobj["items"][i]["Progress"] + "</td><td>" +
+              dataobj["items"][i]["Speed"] + "</td><td>" + dataobj["items"][i]["Duration"] + "</td><td>" + dataobj["items"][i]["Output"] + "</td><td>" +
+              dataobj["items"][i]["Format"] + "</td><td>" + dataobj["items"][i]["LastUpdate"] + "</td><td>" +
+              dataobj["items"][i]["AudioBitrate"] + "</td><td>" +
+              dataobj["items"][i]["VideoBitrate"] + "</td>";
+          }
+          document.getElementById('tableSort').childNodes[3].innerHTML = str;
+          setPageDisplay(start, end);
+          // 两秒后模拟点击
+          setTimeout(function() {
+              // IE
+              if(document.all) {
+                  document.getElementById("defaultSort").click();
+                  document.getElementById("defaultSort").click();
+              }
+              // 其它浏览器
+              else {
+                  var e = document.createEvent("MouseEvents");
+                  e.initEvent("click", true, true);
+                  document.getElementById("defaultSort").dispatchEvent(e);
+                  document.getElementById("defaultSort").dispatchEvent(e);
+              }
+          }, 0.5);
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "ZFazSV91M77Mx83P8qIQRahntdAKzZ4a3w1Qp0XD");
+      xmlhttp.send();
+    }
+
+    // function sortJson(array, key, order) {
+    //   return array.sort(function(index, next) {
+    //     var a = index[key];
+    //     var b = next[key];
+    //     if ("asc" == order) {
+    //       return ((a > b) ? -1 : ((a < b) ? 1 : 0));
+    //     } else {
+    //       return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    //     }
+    //   });
+    // }
+
+    function setPageDisplay(start, end) {
+      var trobj = document.getElementsByTagName('tr');
+      console.log(trobj.length);
+      var len = trobj.length;
+      for (var i = 1; i < len; i++) {
+        if (i >= start && i < end) {
+          trobj[i].id = "displayBlockTr";
+        } else {
+          trobj[i].id = "displayNoneTr";
+        }
+      }
+    }
+    // //点击分页1 2 3 改变页面
+    // function changePage(self) {
+    //
+    //   var num = self.innerText;
+    //   if (num == 1) {
+    //     var start = 0;
+    //     var end = 11;
+    //   } else {
+    //     var start = 1 + (num - 1) * 10;
+    //     var end = 1 + (num * 10);
+    //   }
+    //   setPageDisplay(start, end);
+    // }
+    // (function($) {
+    //   //插件
+    //   $.extend($, {
+    //     //命名空间
+    //     sortTable: {
+    //       sort: function(tableId, Idx) {
+    //         var table = document.getElementById(tableId);
+    //         var tbody = table.tBodies[0];
+    //         var tr = tbody.rows;
+    //
+    //         var trValue = new Array();
+    //         for (var i = 0; i < tr.length; i++) {
+    //           trValue[i] = tr[i]; //将表格中各行的信息存储在新建的数组中
+    //         }
+    //
+    //         if (tbody.sortCol == Idx) {
+    //           trValue.reverse(); //如果该列已经进行排序过了，则直接对其反序排列
+    //         } else {
+    //           //trValue.sort(compareTrs(Idx));  //进行排序
+    //           trValue.sort(function(tr1, tr2) {
+    //             var value1 = tr1.cells[Idx].innerHTML;
+    //             var value2 = tr2.cells[Idx].innerHTML;
+    //             return value1.localeCompare(value2);
+    //           });
+    //         }
+    //         var fragment = document.createDocumentFragment(); //新建一个代码片段，用于保存排序后的结果
+    //         for (var i = 0; i < trValue.length; i++) {
+    //           fragment.appendChild(trValue[i]);
+    //         }
+    //
+    //         tbody.appendChild(fragment); //将排序的结果替换掉之前的值
+    //         tbody.sortCol = Idx;
+    //       }
+    //     }
+    //   });
+    // })(jQuery);
+  </script>
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      font-family: verdana;
+      font-size: 14px;
+    }
+
+    #displayBlockTr {
+      display: table-row;
+    }
+
+    #displayNoneTr {
+      display: none;
+    }
+
+    table {
+      width: 100%;
+    }
+
+    ul {
+      position: absolute;
+      right: 20px;
+    }
+
+    ul li {
+      float: left;
+      list-style: none;
+      width: 50px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      border: 1px solid #dee2e6;
+      background:#0080ff;
+    }
+
+    ul li:hover {
+      background: #ee80ff;
+      color: #fff;
+    }
+
+    ul li:first-child {
+      border-radius: 5px 0 0 5px;
+    }
+
+    ul li:last-child {
+      border-radius: 0 5px 5px 0;
+    }
+
+    h1 {
+      margin-top:50px;
+      text-align: center;
+    }
+
+    th,
+    td {
+      height: 50px;
+    }
+
+    /* table tr:nth-child(even) {
+      background: #ddd;
+    } */
+    table td{
+      border:1px solid lightgray;
+    }
+    th {
+      background: #0080ff;
+      color: white;
+    }
+
+    tr:hover {
+      background: #ddd;
+    }
+    .contentDiv{
+      margin-top:50px;
+      min-height:580px;
+    }
+    .page{
+      width:100%;
+      background:#0080ff;
+      height:50px;
+    }
+    .page nav ul{
+      margin-top:10px;
+    }
+  </style>
+</head>
+
+<body onload="loadXMLdoc(0,11)">
+  <div class="head">
+    <h1>Report</h1>
+  </div>
+  <div class="contentDiv" id="contentDiv">
+    <table summary="user infomation table" id="tableSort">
+      <thead>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-end" id="pageUl">
+      </ul>
+    </nav>
+  </div>
+</body>
+
+</html>

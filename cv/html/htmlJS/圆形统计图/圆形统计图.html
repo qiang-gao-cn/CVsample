@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>EasySector - HoverTree</title>
+  <base target="_blank" />
+  <meta charset="utf-8" />
+  <script src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+  <script src="http://hovertree.com/texiao/easysector/jquery.easysector.1.0.0.js"></script>
+
+</head>
+
+
+    <div id="easysector" onload="hello()"></div>
+
+
+
+<script type="text/javascript">
+var h_items = new Array();
+h_items[0] = {
+  "h_title": "Chrome",
+  "h_amount": 34,
+  "h_color": "red"
+}
+h_items[1] = {
+  "h_title": "FireFox",
+  "h_amount": 16,
+  "h_color": "yellow"
+}
+h_items[2] = {
+  "h_title": "IE",
+  "h_amount": 16,
+  "h_color": "green"
+}
+h_items[3] = {
+  "h_title": "Other",
+  "h_amount": 14,
+  "h_color": "blue"
+}
+h_items[4] = {
+  "h_title": "test",
+  "h_amount": 20,
+  "h_color": "pink"
+}
+$("#easysector").easysector({
+  "h_items": h_items,
+  "h_title": "Browser Percent",
+  "h_width": 260,
+  "h_borderColor": "silver",
+  "h_poindlength": 0,
+  "h_showamount": true,
+  "h_backColor": "#eee",
+  "h_recwidth": 20,
+  "h_titlesize": 24,
+  "h_Radii": 125,
+  "h_infosize": 16
+});
+</script>
+
+</body>
+
+</html>

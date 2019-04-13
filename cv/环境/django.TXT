@@ -1,0 +1,6 @@
+Djaogo：
+安装：pip install Django
+开始工作：
+django-admin startproject filename
+cd filename
+python manage.py startapp blog

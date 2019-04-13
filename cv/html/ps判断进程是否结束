@@ -1,0 +1,2 @@
+ ps -elf | grep Remux.bash | grep -v "$$" | wc -l
+ 判断进程是否结束

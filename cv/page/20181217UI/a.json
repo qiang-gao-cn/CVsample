@@ -1,0 +1,15 @@
+{
+    "Service": "Capture",
+    "Device": "v4l2",
+    "VideoSize": "640x360",
+    "Source": "0",
+    "Output": "sf",
+    "Loop": "1",
+    "NbInfo": "1",
+    "NbLog": "1",
+    "MediaInfo": "1",
+    "Thumbnail": "1",
+    "UpdateTime": "1",
+    "Enable": "true",
+    "Version": "0001"
+}

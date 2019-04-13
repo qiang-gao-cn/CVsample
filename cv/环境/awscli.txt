@@ -1,0 +1,64 @@
+删除s3文件：aws s3 rm s3://bucket/ --recursive
+
+cat ~/.aws/credentials
+cat ~/.aws/config
+$ export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+$ export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+$ export AWS_DEFAULT_REGION=us-west-2
+$第四个是format：填写json text等
+
+上传：aws s3 cp s3://mybucket/stream.txt -   
+下载：date | aws s3 cp - s3://mybucket/date2.txt
+
+安装：
+安装python3：https://www.cnblogs.com/kimyeee/p/7250560.html
+sudo su
+ yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel gcc gcc-c++ clang cpplint cppcheck make wget
+wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz
+#cp /vagrant/Python-3.6.1.tgz .
+mkdir -p /usr/local/python3
+cp Python-3.6.1.tgz /usr/local/python3
+cd /usr/local/python3
+tar -zxvf Python-3.6.1.tgz
+cd Python-3.6.1
+./configure --prefix=/usr/local/python3
+make && make install
+ln -s /usr/local/python3/bin/python3 /usr/bin/python3
+vi ~/.bash_profile
+编辑其中PATH=$PATH:$HOME/bin为PATH=$PATH:$HOME/bin:/usr/local/python3/bin
+保存退出
+source ~/.bash_profile
+python3 -V
+pip3 -V
+ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3
+
+
+python2：
+sudo su
+yum install -y gcc gcc-c++ clang make cpplint cppcheck
+yum install -y epel-release
+
+yum -y install python-pip
+
+pip install awscli
+# 
+. ./Env.bash
+export AWS_ACCESS_KEY_ID=AKIAJA3Z2UBXMMCKM3AQ 
+export AWS_SECRET_ACCESS_KEY=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
+export AWS_DEFAULT_REGION=ap-southease-1
+export json
+
+python3：
+
+yum install -y epel-release
+ 
+yum install -y python34
+yum -y install python34-pip
+
+pip3 install awscli --user
+
+pip3 install boto3 --user
+ 
+ 
+. ./Env.bash
+

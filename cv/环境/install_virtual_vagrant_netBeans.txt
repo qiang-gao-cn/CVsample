@@ -1,0 +1,33 @@
+virtualbox install：
+window virtualbox URL：https://download.virtualbox.org/virtualbox/5.2.20/VirtualBox-5.2.20-125813-Win.exe
+
+vagrant install：
+vagrant download url：https://www.vagrantup.com/downloads.html
+linux :sudo apt install vagrant -y
+vagrant运行的命令：
+准备：准备好一个vagrantfile文件
+vagrant up（此命令为启动vagrantfile文件生成虚拟机）
+vagrant ssh （此命令为进入虚拟机）
+以下为通过iso镜像制作个人box；
+下载centos的minimal iso镜像文件，资源https://www.centos.org/ 中minimal iso选项；
+运行vbox虚拟机进行安装；
+注意：（将安装生成的文件与iso放在一个文件夹下如centosfile）
+cd centosfile
+git init
+vagrant package —base centos75
+vagrant box add centos75 package.box
+以上为生成box
+git init
+vagrant init centos75 （此命令是根据box生成vagrantfile）
+vagrant up
+注意：当运行vagrant up命令结束后，在虚拟机vbox上点击show（显示），来显示并操作安装的系统；
+以上为运行box
+
+netBeans install：
+netBeans  download  url：https://netbeans.org/
+jdk download url：https://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html
+安装资料url：https://netbeans.org/community/releases/82/install_zh_CN.html
+当安装完成后，运行netBeans；点击文件的下一栏的空白处，右键添加远程，即可添加远程连接模块；会出现一个电脑屏样式，点击管理主机；选择添加，下一步添加主机名及端口，下一步输入标识，验证选择口令；等待输入主机的密码；完成
+例如：主机：demo.dao-lab.com  端口23022  标识qiang-gao-cn 口令ichi2san4.5
+
+

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>test ajax</title>
+  <script type="text/javascript">
+      function ajaxLoad(){
+        var xmlhttp;
+        if(window.XMLHttpRequest){
+          xmlhttp=new XMLHttpRequest();
+        }else {
+          xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange=function(){
+          if(xmlhttp.readyState==4&&xmlhttp.status==200){
+            var data=xmlhttp.responseText;
+            dataObj=JSON.parse(data);
+            var divObj=document.getElementById('div1');
+            var str="";
+            str+="Progress:"+dataObj[0].Progress;
+            divObj.innerHTML=str;
+          }
+        }
+        xmlhttp.open("POST","json/State.JSON",true);
+        xmlhttp.send();
+      }
+
+  </script>
+</head>
+<body onload="ajaxLoad()">
+  <div id="div1"></div>
+</body>
+</html>

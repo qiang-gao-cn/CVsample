@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" /> -->
+  <script src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+  <script src="http://hovertree.com/texiao/easysector/jquery.easysector.1.0.0.js"></script>
+  <script type="text/javascript">
+    //判断input date的日期
+    function displayResult(self) {
+      var x = document.getElementsByTagName('input')[0];
+      var d = new Date();
+      var ipt_Val = x.value;
+      var iptVal = Date.parse(new Date(ipt_Val.replace(/-/g, "/")));
+
+      var time = "2018-12-20";
+      var initVal = Date.parse(new Date(time.replace(/-/g, "/")));
+
+      var now = d.getTime();
+      if (iptVal < initVal || iptVal > now) {
+        alert("please choose date from 2018-12-20 to now!!");
+      } else {
+        loadXMLDoc(self, ipt_Val);
+      }
+    }
+
+    //load ajax method get
+    function loadXMLDoc(self, dates) {
+      document.getElementById("myDiv").innerHTML = "<div style=\"width:400px;height:100px;text-align:center;line-height:100px;position:fixed;left:40%;top:30%;border:1px solid black;\">数据加载中，请稍等......</div>";
+      //var url = "https://2g5p8jx5q5.execute-api.ap-southeast-1.amazonaws.com/default/vaas-am730-cf-report?date=" + dates;
+      var url = "jsonn/2019-01-15";
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+
+          for (var i = 0; i < dataobj.length; i++) {
+            for (var key in dataobj[i]) {
+              if (key != "date" && key != "ua_OSX_Desktop" && key != "ua_bot" && key != "played_sec" && key != "ua_Linux_Desktop" && key != "uri" && key != "played_num" && key != "ua_iOS" && key != "ua_Windows_Desktop" && key != "ua_Android") {
+                dataobj[i].ua_others = dataobj[i][key];
+              }
+              dataobj[i][key] = dataobj[i][key];
+            }
+          }
+
+          //进行排序
+          var ids = self.id;
+
+          for (var i = 0; i < dataobj.length; i++) {
+            if (dataobj[i].ua_OSX_Desktop == undefined) {
+              dataobj[i].ua_OSX_Desktop = 0;
+            }
+            if (dataobj[i].ua_bot == undefined) {
+              dataobj[i].ua_bot = 0;
+            }
+            if (dataobj[i].ua_Linux_Desktop == undefined) {
+              dataobj[i].ua_Linux_Desktop = 0;
+            }
+            if (dataobj[i].ua_iOS == undefined) {
+              dataobj[i].ua_iOS = 0;
+            }
+            if (dataobj[i].ua_Windows_Desktop == undefined) {
+              dataobj[i].ua_Windows_Desktop = 0;
+            }
+            if (dataobj[i].ua_Android == undefined) {
+              dataobj[i].ua_Android = 0;
+            }
+            if (dataobj[i].ua_others == undefined) {
+              dataobj[i].ua_others = 0;
+            }
+          }
+
+          dataobj.sort(function(a, b) {
+            return b.played_num - a.played_num;
+          })
+          if (ids == "played_time") {
+            dataobj.sort(function(a, b) {
+              return b.played_sec - a.played_sec;
+            })
+          }
+          if (ids == "played_num") {
+            dataobj.sort(function(a, b) {
+              return b.played_num - a.played_num;
+            })
+          }
+          if (ids == "ua_OSX_Desktop") {
+            dataobj.sort(function(a, b) {
+              return b.ua_OSX_Desktop - a.ua_OSX_Desktop;
+            })
+          }
+          if (ids == "ios") {
+            dataobj.sort(function(a, b) {
+              return b.ua_iOS - a.ua_iOS;
+            })
+          }
+          if (ids == "linux_desktop") {
+            dataobj.sort(function(a, b) {
+              return b.ua_Linux_Desktop - a.ua_Linux_Desktop;
+            })
+          }
+          if (ids == "winDesktop") {
+            dataobj.sort(function(a, b) {
+              return b.ua_Windows_Desktop - a.ua_Windows_Desktop;
+            })
+          }
+          if (ids == "androids") {
+            dataobj.sort(function(a, b) {
+              return b.ua_Android - a.ua_Android;
+            })
+          }
+          if (ids == "bots") {
+            dataobj.sort(function(a, b) {
+              return b.ua_bot - a.ua_bot;
+            })
+          }
+          if (ids == "others") {
+            dataobj.sort(function(a, b) {
+              return b.ua_others - a.ua_others;
+            })
+          }
+          //创建数据表格
+
+          var str = "";
+          str += "<table id=\"INFO\"><tr>";
+          str +=
+            "<th style=\"width:16%;\">Video name</th><th>DATE</th><th id=\"played_num\" onclick=\"displayResult(this)\">Played Num</th><th id=\"played_time\" onclick=\"displayResult(this)\">Played Time</th><th id=\"ua_OSX_Desktop\"  onclick=\"displayResult(this)\">OSX Desktop</th><th id=\"ios\"  onclick=\"displayResult(this)\">IOS</th><th id=\"linux_desktop\"  onclick=\"displayResult(this)\">Linux Desktop</th><th id=\"winDesktop\"  onclick=\"displayResult(this)\">Window Desktop</th><th id=\"androids\"  onclick=\"displayResult(this)\">Android</th><th id=\"bots\" onclick=\"displayResult(this)\">Bot</th><th id=\"others\" onclick=\"displayResult(this)\">Others</th>";
+
+          for (var i = 0; i < dataobj.length; i++) {
+            str += "</tr><tr><td>" + dataobj[i].uri + "</td>";
+            str += "<td>" + dataobj[i].date + "</td>";
+            str += "<td>" + dataobj[i].played_num + "</td>";
+            str += "<td>" + dataobj[i].played_sec + "</td>";
+            str += "<td>" + dataobj[i].ua_OSX_Desktop + "</td>";
+            str += "<td>" + dataobj[i].ua_iOS + "</td>";
+            str += "<td>" + dataobj[i].ua_Linux_Desktop + "</td>";
+            str += "<td>" + dataobj[i].ua_Windows_Desktop + "</td>";
+            str += "<td>" + dataobj[i].ua_Android + "</td>";
+            str += "<td>" + dataobj[i].ua_bot + "</td>";
+            str += "<td>" + dataobj[i].ua_others + "</td>";
+            str += "</tr>";
+          }
+          str += "</table>";
+          document.getElementById("myDiv").innerHTML = str;
+          displayInfo();
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "S7VhXUVH6U1Cy2OH6H2h37rAyA47I2V39inel5Rw");
+      xmlhttp.send();
+    }
+
+    //show info total
+    function displayInfo() {
+      var divobj = document.getElementById("totalDiv");
+      divobj.innerHTML = "";
+      var trobj = document.getElementsByTagName("tr");
+
+      var ua_OSX_Desktop_sum = 0,
+        ua_bot_sum = 0,
+        played_sec_sum = 0,
+        ua_Linux_Desktop_sum = 0,
+        played_num_sum = 0,
+        ua_iOS_sum = 0,
+        ua_Windows_Desktop_sum = 0,
+        ua_Ohters_sum = 0,
+        ua_Android_sum = 0;
+      //循环计算各项的值
+      for (var i = 1; i < trobj.length; i++) {
+        ua_OSX_Desktop_sum += parseInt(trobj[i].childNodes[4].innerHTML);
+        ua_bot_sum += parseInt(trobj[i].childNodes[9].innerHTML);
+        played_sec_sum += parseInt(trobj[i].childNodes[2].innerHTML);
+        ua_Linux_Desktop_sum += parseInt(trobj[i].childNodes[6].innerHTML);
+        played_num_sum += parseInt(trobj[i].childNodes[3].innerHTML);
+        ua_iOS_sum += parseInt(trobj[i].childNodes[5].innerHTML);
+        ua_Windows_Desktop_sum += parseInt(trobj[i].childNodes[7].innerHTML);
+        ua_Android_sum += parseInt(trobj[i].childNodes[8].innerHTML);
+        ua_Ohters_sum += parseInt(trobj[i].childNodes[10].innerHTML);
+      }
+
+      divobj.innerHTML = "<table id=\"totalINFO\">" +
+
+        "<tr><th>Played Time Total</th><th>Played Num Total</th><th>OSX Desktop Total</th><th>IOS Total</th><th>Linux Desktop Total</th><th>Window Desktop Total</th><th>Android Total</th><th>Bot Total</th><th>Others Total</th></tr>" +
+        "<tr><td>" + played_sec_sum + "</td><td>" + played_num_sum + "</td><td>" + ua_OSX_Desktop_sum + "</td><td>" + ua_iOS_sum + "</td><td>" + ua_Linux_Desktop_sum + "</td><td>" + ua_Windows_Desktop_sum + "</td><td>" + ua_Android_sum + "</td><td>" +
+        ua_bot_sum + "</td><td>" + ua_Ohters_sum + "</td></tr></table>";
+
+      //生成圆形统计图
+      document.getElementById("easysector").innerHTML = "";
+      var colors = ["red", "blue", "orange", "yellow", "green", "#00FFFF", "pink", "#BA55D3", "#F5F5DC"];
+      var h_items = new Array();
+      var sum = 0;
+      for (var i = 2; i < trobj[1].childNodes.length; i++) {
+        h_items[sum] = {
+          "h_title": trobj[0].childNodes[i].innerHTML,
+          "h_amount": parseInt(trobj[1].childNodes[i].innerHTML),
+          "h_color": colors[i]
+        }
+        sum++;
+      }
+      $("#easysector").easysector({
+        "h_items": h_items,
+        "h_title": "Total Info Percent",
+        "h_width": 260,
+        "h_borderColor": "silver",
+        "h_poindlength": 0,
+        "h_showamount": true,
+        "h_backColor": "#eee",
+        "h_recwidth": 20,
+        "h_titlesize": 24,
+        "h_Radii": 125,
+        "h_infosize": 16
+      });
+    }
+
+    function downloadFile() {
+      var xmlhttp = new XMLHttpRequest();
+      var trobj = document.getElementsByTagName("tr");
+      var divobjs = document.getElementById("myDiv");
+      var filename = divobjs.childNodes[0].childNodes[0].childNodes[1].childNodes[1].innerHTML;
+
+      if (divobjs.childNodes[0].id == "INFO") {
+        var url = filename + ".csv";
+        var obj = "";
+        for (var i = 0; i < trobj.length; i++) {
+          for (var j = 0; j < trobj[i].childNodes.length; j++) {
+            obj += trobj[i].childNodes[j].innerHTML;
+            obj += ",";
+          }
+          obj += "\r\n";
+        }
+      }
+
+
+
+      const a = document.createElement('a'); // 创建a标签
+      a.setAttribute('download', url); // download属性
+      var blob = URL.createObjectURL(new Blob([obj]));
+      a.setAttribute('href', blob); // href链接
+      a.click(); // 自执行点击事件
+    }
+
+    window.onscroll = function() {
+      var t = document.documentElement.scrollTop || document.body.scrollTop;
+      var top_div = document.getElementById("returnTop");
+      if (t >= 300) {
+        top_div.style.display = "inline";
+      } else {
+        top_div.style.display = "none";
+      }
+    }
+  </script>
+  <style type="text/css">
+    table {
+      text-align: left;
+      word-break: break-all;
+    }
+
+    table td {
+      width: 8%;
+    }
+
+    table th {
+      background: #0080ff;
+      color: white;
+      height: 40px;
+      width: 8%;
+    }
+
+    table tr:nth-child(even) {
+      background: #eaf3f5;
+    }
+
+    .header {
+      width: 100%;
+      height: 220px;
+    }
+
+    #forms {
+      float: left;
+      width: 16%;
+      min-width: 135px;
+    }
+    #forms button{
+      float:left;
+      margin-top:170px;
+      margin-left: -130px;
+    }
+    #forms input{
+      float:left;
+    }
+    #totalDiv {
+      float: left;
+      width: 50%;
+      margin-top: -160px;
+    }
+
+    #myDiv {
+      width: 100%;
+      float: right;
+    }
+
+    .returnTop {
+      position: fixed;
+      right: 2%;
+      bottom: 2%;
+      background: skyblue;
+      display: none;
+    }
+    .circles{
+      float:right;
+    }
+    .easysectorinfo{
+      position: absolute;
+      right: 290px;
+      top:40px;
+    }
+
+    .easycanvas{
+      width:80%;
+    }
+    /* .circles {
+      padding-top: 100px;
+    } */
+
+    .button {
+      width: 100px;
+      line-height: 38px;
+      font-weight: bold;
+      border-radius: 5px;
+      position: relative;
+    }
+
+    .button.gray {
+      color: #8c96a0;
+      border: 1px solid #dce1e6;
+      background: -webkit-linear-gradient(top, #f2f3f7, #e4e8ec);
+      background: -moz-linear-gradient(top, #f2f3f7, #e4e8ec);
+    }
+
+    .round {
+      padding-right: 30px;
+    }
+
+    .round:after {
+      position: absolute;
+      content: "\003c";
+      top: 50%;
+      right: 10px;
+      margin-top: -10px;
+      width: 17px;
+      height: 20px;
+      padding-left: 3px;
+      line-height: 18px;
+      font-size: 10px;
+      font-weight: normal;
+      border-radius: 10px;
+      -webkit-transform: rotate(-90deg);
+      -moz-transform: rotate(-90deg);
+    }
+
+    .gray.round:after {
+      background: -webkit-linear-gradient(top, #dce1e6, #dde2e7);
+      background: -moz-linear-gradient(top, #dce1e6, #dde2e7);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div id="forms">
+      <a name="top"><input type="date" name="" id="dateIpt" onchange="displayResult(this)"></a>
+      <button type="button" class="button gray round" id="downloads" onclick="downloadFile()">下载文件</button>
+    </div>
+
+    <!-- 绘制圆形统计图 -->
+    <div class="circles">
+      <div id="easysector"></div>
+    </div>
+
+    <div id="totalDiv"></div>
+  </div>
+  <div id="myDiv">
+
+  </div>
+  <div class="returnTop" id="returnTop">
+    <a href="javascript:scroll(0,0)" style="text-decoration:none;">返回<br />顶部</a>
+  </div>
+
+
+
+
+
+</body>
+
+</html>

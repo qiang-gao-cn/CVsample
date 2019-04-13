@@ -1,0 +1,27 @@
+git --version 查看版本，验证是否安装成功
+git config --global user.name ""
+git config --global user.email ""  
+git config --list配置个人信息
+以下为常用命令：
+-----------------------------------------------------------------------------------------
+git status 查看状态
+git log --online 查看log信息
+************************************************************************************************
+git init 初始
+git add filename  添加文件 通常使用 “ . ” 表示全部
+git commit -m "add your comment" 生成add文件的地址
+git remote add origin URL 添加上传到的链接；
+git pull --rebase origin master 当添加URL后，使用此命令可以将链接上的文件与本地合并
+git push -u origin master 上传文件
+从git init到git push -u origin master 这些命令为上传到github的命令，缺一不可
+当上传到个人的github上后，可以点击pull request上传到组织的github上；
+******************************************************************************************************
+git clone URL 可以将链接上的文件下载到本地
+*****************************************************************************************************
+git init 
+git remote add origin URL
+git rm -r --cached  filename 删除文件
+git commit -m  "add your comment"
+git push -u origin master
+此上命令为删除GitHub上的文件
+--------------------------------------------------------------------------------------------------------

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    function loadJob(){
+      var job0 = {}
+      job0["profile"] = "turner-edl-mp4-240p";
+      job0["output"] = "240p_DS007823.mp4";
+      var job3 = {}
+      job3["profile"] = "turner-edl-mp4-1080p";
+      job3["output"] = "1080p_DS007823.mp4";
+      var job1 = {}
+      job1["profile"] = "turner-edl-mp4-480p";
+      job1["output"] = "480p_DS007823.mp4";
+      var job2 = {}
+      job2["profile"] = "turner-edl-mp4-720p";
+      job2["output"] = "720p_DS007823.mp4";
+      var job4 = {}
+      job4["profile"] = "turner-edl-mxf-xdcam-50m";
+      job4["output"] = "50m_DS007823.mp4";
+
+      var str="";
+      for(var i = 0;i < 5;i++){
+        str += "<div id=\"job"+i+"\" class=\"col-xs-12 col-sm-6 col-lg-2 col-md-3\">";
+        var job = eval("("+"job"+i+")");
+        str+="<h3>"+job["profile"]+"</h3>";
+        for(var key in job){
+          str+= "<div class=\"control-group panel panel-primary\"><div class=\"panel-heading\"><label class=\"panel-title control-label\" for=\""+key+"\">"+key+" : </label></div><div class=\"panel-body controls\"><input type=\"text\" class=\"form-control\" id="+key+i+" value=\""+job[key]+"\"></div></div>"
+        }
+        str+="</div>";
+      }
+
+      document.getElementById('formdiv').innerHTML = str;
+    }
+    function getJob(){
+      for(var i = 0;i < 5;i++){
+        var job = {};
+        var CommonPart = document.getElementById("CommonPart");
+        // console.log(CommonPart.children[3].children[1].children[0].value);
+        for(var k = 1;k < CommonPart.children.length;k+=2){
+          var key = CommonPart.children[k].children[1].children[0].id;
+          var value = CommonPart.children[k].children[1].children[0].value;
+          job[key] = value;
+        }
+        var inputParentNodes = document.getElementById("job"+i);
+        for(var j = 1;j < inputParentNodes.children.length;j+=2){
+          var key = (inputParentNodes.children[j].children[1].children[0].id).split(i)[0];
+          var value = inputParentNodes.children[j].children[1].children[0].value;
+          job[key] = value;
+        }
+        console.log(job);
+        loadXMLDoc(job);
+      }
+    }
+    function loadXMLDoc(job) {
+      var url = "https://xp48vmg8rk.execute-api.ap-southeast-1.amazonaws.com/dev/job";
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          console.log(dataobj)
+        }
+      }
+      xmlhttp.open("POST", url, true);
+      xmlhttp.setRequestHeader("Content-Type", "application/json");
+      xmlhttp.setRequestHeader("x-api-key", "pJG2LEElEe7f2HL1vHiY172bSFfTChP33cV5zrk5");
+      xmlhttp.send(JSON.stringify(job));
+    }
+  </script>
+  <style type="text/css">
+  .col-xs-6{
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .margins{
+    margin-right: 3%;
+  }
+  </style>
+</head>
+
+<body onload="loadJob()">
+  <div class="container-fluid">
+    <div class="row">
+        <h3>Common parts of job</h3>
+        <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-2 col-md-3">
+          <div class="panel-heading"><label class="panel-title control-label">s3_input : </label></div>
+          <div class="panel-body controls"><input type="text" class="form-control" id="s3_input" value="s3://vaas-03-turner-dev/To Dao Lab"></div>
+        </div>
+        <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-2 col-md-3">
+          <div class="panel-heading"><label class="panel-title control-label">edl_input : </label></div>
+          <div class="panel-body controls"><input type="text" class="form-control" id="edl_input" value="DS007823.edl"></div>
+        </div>
+        <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-2 col-md-3">
+          <div class="panel-heading"><label class="panel-title control-label">src_input : </label></div>
+          <div class="panel-body controls"><input type="text" class="form-control" id="src_input" value="DS007823.mxf"></div>
+        </div>
+        <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-2 col-md-3">
+          <div class="panel-heading"><label class="panel-title control-label">opening_input : </label></div>
+          <div class="panel-body controls"><input type="text" class="form-control" id="opening_input" value="CN_Opening_Bumper_HD.mxf"></div>
+        </div>
+        <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-2 col-md-3">
+          <div class="panel-heading"><label class="panel-title control-label">closing_input : </label></div>
+          <div class="panel-body controls"><input type="text" class="form-control" id="closing_input" value="CN_Opening_Bumper_HD.mxf"></div>
+        </div>
+        <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-2 col-md-3">
+          <div class="panel-heading"><label class="panel-title control-label">logo_input : </label></div>
+          <div class="panel-body controls"><input type="text" class="form-control" id="logo_input" value="CN_side_by_side_logo_bug_HD.png"></div>
+        </div>
+        <div class="control-group panel panel-primary  col-xs-6 col-sm-4 col-lg-2 col-md-3">
+          <div class="panel-heading"><label class="panel-title control-label">s3_output : </label></div>
+          <div class="panel-body controls"><input type="text" class="form-control" id="s3_output" value="s3://vaas-03-turner-dev/output/20190310/demo"></div>
+        </div>
+      </div>
+    <div class="row">
+      <form class="bs-example bs-example-form" role="form" id="formdiv">
+      </form>
+      <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group"  style="margin-top:20px;margin-left:20px;">
+            <button type="button" class="btn btn-default"  onclick="getJob()">SUBMIT</button>
+         </div>
+      </div>
+    </div>
+
+</div>
+</body>
+</html>

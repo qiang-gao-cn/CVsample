@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>demo</title>
+        <style>
+            .btn{height:30px;width:100px;background:red;margin:10px 0;text-align:center;line-height:30px;color:#fff;}
+        </style>
+    </head>
+    <body>
+        <div class="postbtn btn">POST请求</div>
+        <div class="getbtn btn">GET请求</div>
+    </body>
+
+    <script type="text/javascript">
+
+        //post请求
+        document.querySelector(".postbtn").onclick= function(){
+            var xmlhttp = new XMLHttpRequest();
+            var obj = {
+                name: 'zhansgan',
+                age: 18
+            };
+            xmlhttp.open("POST", "http://192.168.1.200:8080/php/test.php", true);
+            xmlhttp.setRequestHeader("token","header-token-value"); // 可以定义请求头带给后端
+            xmlhttp.setRequestHeader("dingyi","header-dingyi-value");
+            xmlhttp.send(JSON.stringify(obj));  // 要发送的参数，要转化为json字符串发送给后端，后端就会接受到json对象
+            // readyState == 4 为请求完成，status == 200为请求陈宫返回的状态
+            xmlhttp.onreadystatechange = function(){
+                if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                    console.log(xmlhttp.responseText);
+                }
+            }
+        };
+
+        //get请求
+        document.querySelector(".getbtn").onclick= function(){
+            var xmlhttp = new XMLHttpRequest();
+            // get方法带参数是将参数写在url里面传过去给后端
+            xmlhttp.open("GET", "http://192.168.1.200:8080/php/test.php?name='zhansgang'&age=12", true);
+            xmlhttp.setRequestHeader("token","header-token-value");
+            xmlhttp.setRequestHeader("dingyi","header-dingyi-value");
+            xmlhttp.send();
+            // readyState == 4 为请求完成，status == 200为请求陈宫返回的状态
+            xmlhttp.onreadystatechange = function(){
+                if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                    console.log(xmlhttp.responseText);
+                }
+            }
+        };
+    </script>
+</html>
+---------------------
+作者：codingNoob
+来源：CSDN
+原文：https://blog.csdn.net/CodingNoob/article/details/80879208

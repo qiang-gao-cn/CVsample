@@ -1,0 +1,88 @@
+<html>
+<body>
+  <input type="text" id="auth_username" value="mr_hammer_daolab">username</input>
+  <input type="text" id="auth_password" value="ichi2san4">password</input>
+  <button type="button" onclick="fetchIssuesList(document.getElementById('auth_username').value, document.getElementById('auth_password').value)">Fetch Issues</button>
+  <p id="ctx"></p>
+  <script>
+    //max allowed page number, pagelen=100, we shall check returned repo for it, but it is more than enough now.
+    var api_url = "https://api.bitbucket.org/2.0/user/permissions/repositories?pagelen=100";
+    var username = "";
+    var password = "";
+
+    function parseIssues(responseText, divId) {
+      var issue = document.getElementById(divId);
+      try {
+        var issuesList = JSON.parse(responseText);
+
+        for(var i=0; i<issuesList.values.length; i++) {
+          // console.log(issuesList.values[i])
+          var t = issuesList.values[i];
+          issue.innerHTML += "priority:" + t.priority +
+                            " kind:" + t.kind +
+                            " type:" + t.type +
+                            " reporter:" + t.reporter.display_name +
+                            " milestone:" + t.milestone +
+                            " version:" + t.version +
+                            " updated_on:" + t.updated_on +
+                            " created_on" + t.created_on +
+                            " title:" + t.title +
+                            " state:" + t.state +
+                            " component:" + t.component +
+                            // " assignee:" + t.assignee +
+                            " id:" + t.id +
+                            " content:" + t.content.html +
+                            "<br>";
+        }
+      } catch(e) {
+        issue.innerHTML = "Request Error"
+      }
+    }
+
+    function parseRepos(responseText, divId) {
+      console.log(responseText);
+      console.log(divId);
+      var ctx = document.getElementById(divId);
+      try {
+        var repoList = JSON.parse(responseText);
+        for(var i=0; i<repoList.values.length; i++) {
+          // console.log(repoList.values[i].repository);
+          // console.log(repoList.values[i].repository.full_name);
+          // console.log(repoList.values[i].repository.links.avatar.href);
+          // console.log(repoList.values[i].repository.links.self.href);
+          // console.log(repoList.values[i].repository.links.html.href);
+
+          //TODO : if repo_i is not created
+          ctx.innerHTML += "<div id='repo_" + i.toString() + "'>" + repoList.values[i].repository.full_name + "</div>";
+          loadDoc(repoList.values[i].repository.links.self.href+"/issues?pagelen=100", parseIssues, "repo_"+i.toString());
+        }
+      } catch(e) {
+        ctx.innerHTML = "Request Error";
+      }
+    }
+
+    function loadDoc(url, callback, divId) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {
+            callback(this.responseText, divId);
+          } else {
+            document.getElementById(divId).innerHTML = "Request Error";
+          }
+        }
+      };
+      xhttp.open("GET", url, true);
+      xhttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+      xhttp.send();
+    }
+
+    function fetchIssuesList(u, p) {
+      username = u;
+      password = p;
+      loadDoc(api_url, parseRepos, "ctx")
+    }
+  </script>
+
+</body>
+</html>

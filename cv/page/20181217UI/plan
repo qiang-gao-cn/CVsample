@@ -1,0 +1,24 @@
+﻿会议记录：
+1：4个div，固定大小，Facebook，youtube；server url，key；wosun=date %s;
+2：一列table，只显示状态，
+3:容器兼容
+4：iframe   load更新iframe代码，播放影片
+
+
+任务计划：
+1：根据job生成div，ajax get显示状态信息
+2：添加input text，输入server url，server key信息
+3：ajax put生成json包含server url ，server key信息，将version改为date %s形式，并更改config文件内容，包含enable disabled
+4：添加load按钮，更改iframe信息，加载新的视频
+5：能够兼容各种手机，浏览器和系统；
+
+
+version ：“”
+edit get key.json
+
+
+1:获取并显示三组newenc.json 和newstate.json的部分信息
+2:添加按钮；其中start与stop按钮交替显示，点击start或stop，更改newenc.json的enable及version的值，其中enable值分别为1或0；version的值为当前时间的秒数；
+按钮edit和save也是交替显示；点击edit，将newenc.json中的output获取的值的td或div变为可编辑；点击save将可编辑的td或div里的值发送到newenc.json的output；
+添加load按钮，点击load，播放iframe内容；
+3:当更改newenc.json或newstate.json的内容时，页面会自动刷新所更改的内容；

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>EasySector - HoverTree</title>
+  <base target="_blank" />
+  <meta charset="utf-8" />
+  <script src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+  <script src="http://hovertree.com/texiao/easysector/jquery.easysector.1.0.0.js"></script>
+
+</head>
+<div class="">
+  <table id="totalINFO" border="1">
+    <tbody>
+      <tr>
+        <th>Played Time Total</th>
+        <th>Played Num Total</th>
+        <th>OSX Desktop Total</th>
+        <th>IOS Total</th>
+        <th>Linux Desktop Total</th>
+        <th>Window Desktop Total</th>
+        <th>Android Total</th>
+        <th>Bot Total</th>
+        <th>Others Total</th>
+      </tr>
+      <tr>
+        <td>20192</td>
+        <td>1462540</td>
+        <td>551</td>
+        <td>3164</td>
+        <td>62</td>
+        <td>9872</td>
+        <td>6443</td>
+        <td>87</td>
+        <td>21</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div id="easysector" onload="hello()"></div>
+
+<script type="text/javascript">
+  var trobj = document.getElementsByTagName("tr");
+  var colors = ["", "red", "", "blue", "", "orange", "", "yellow", "", "green", "", "#00FFFF", "", "pink", "", "#BA55D3", "", "#F5F5DC", ""];
+  var h_items = new Array();
+  var sum = 0;
+  for (var i = 1; i < trobj[1].childNodes.length; i+=2) {
+    console.log(trobj[0].childNodes[i].innerHTML);
+    console.log(parseInt(trobj[1].childNodes[i].innerHTML));
+
+    h_items[sum] = {
+      "h_title": trobj[0].childNodes[i].innerHTML,
+      "h_amount": parseInt(trobj[1].childNodes[i].innerHTML),
+      "h_color": colors[i]
+    }
+    sum++;
+  }
+
+
+  $("#easysector").easysector({
+    "h_items": h_items,
+    "h_title": "Browser Percent",
+    "h_width": 260,
+    "h_borderColor": "silver",
+    "h_poindlength": 0,
+    "h_showamount": true,
+    "h_backColor": "#eee",
+    "h_recwidth": 20,
+    "h_titlesize": 24,
+    "h_Radii": 125,
+    "h_infosize": 16
+  });
+</script>
+
+</body>
+
+</html>

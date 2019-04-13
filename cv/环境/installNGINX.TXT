@@ -1,0 +1,14 @@
+资料：
+1：https://www.cnblogs.com/zhanghaoyong/p/7737536.html
+2：https://my.oschina.net/andyfeng/blog/1634805
+sudo su
+yum install epel-release
+yum install nginx
+firewall-cmd --permanent --zone=public --add-service=http 
+
+firewall-cmd --permanent --zone=public --add-service=https
+
+firewall-cmd --reload
+
+
+ sudo service nginx status设置是否启动status可替换为start/stop

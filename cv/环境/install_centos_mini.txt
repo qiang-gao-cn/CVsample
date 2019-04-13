@@ -1,0 +1,65 @@
+url:https://www.cnblogs.com/sevenskey/p/5347245.html
+
+"xxx is not in the sudoers file"
+
+    执行su -进入超级用户模式
+    执行chmod u+w /etc/sudoers为该文件添加写权限
+    修改该文件：找到root ALL=(ALL) ALL这一行，在它的下面添加一行<username> ALL=(ALL) ALL（为你的用户名）
+    执行chmod u-w /etc/sudoers撤销该文件写权限
+
+无法联网
+
+CentOS7 Minimal 是默认关闭网卡的。现在需要打开它。
+
+    执行cd /etc/sysconfig/network-scripts/
+    ls查看该目录下文件，执行vi ifcfg-*打开第一个文件（由于第一个文件的文件名有可能是不同的所以使用ifcfg-*来表示）
+    将最后一行ONBOOT=no改为ONBOOT=yes，保存
+    执行service network restart重启网络服务
+
+配置其它网络服务
+
+使用命令nmtui
+更换yum源
+
+这里换成163的。
+
+    执行sudo yum install wget安装wget
+    安装好wget后，执行wget http://mirrors.163.com/.help/CentOS7-Base-163.repo下载163的源
+
+    下载好后执行
+
+     cp CentOS7-Base-163.repo /etc/yum.repos.d/ && cd /etc/yum.repos.d && mv CentOS-Base.repo CentOS-Base.repo.bk && mv CentOS7-Base-163.repo CentOS-Base.repo
+
+    备份系统自带的源并且替换为163源
+
+    执行yum makecache更新yum源
+
+安装proxychains
+
+sudo yum install gcc
+cd ~
+git clone https://github.com/rofl0r/proxychains-ng.git 
+cd proxychains-ng 
+./configure && make && make install  
+make install-config
+
+
+####ask:
+curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash -
+
+yum install -y epel-release
+yum install -y git
+yum groupinstall -y development
+yum install -y glibc-static
+yum install -y nodejs
+
+#create volo user and login as volo
+#https://github.com/c9/core
+git clone https://github.com/c9/core.git c9sdk
+cd c9sdk
+scripts/install-sdk.sh
+
+mkdir -p /home/volo/workspace/
+
+while true; do node /home/volo/c9sdk/server.js -p 21 -a volo:ichi2san4 -l 0.0.0.0 -w /home/volo/workspace/; sleep 1; done
+

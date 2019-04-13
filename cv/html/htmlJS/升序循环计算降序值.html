@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script type="text/javascript">
+  var str = "AB";
+  var num = 0;
+  var base = 1;
+  for(var i = 0;i < str.length;i++){
+    num += (str.charAt(str.length-1-i).charCodeAt()-64)*base;
+    base *=26;
+  }
+
+  console.log(num);
+
+
+  </script>
+</head>
+
+<body>
+</body>
+
+</html>

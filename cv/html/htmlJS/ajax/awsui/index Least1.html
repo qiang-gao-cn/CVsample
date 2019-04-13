@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript">
+    function loadDate() {
+      //确定当天的日期
+      var d = new Date();
+      var day = d.getDate();
+      var month = d.getMonth() + 1;
+      var year = d.getFullYear();
+      var endDate = year + "-" + month + "-" + day;
+      //将getAll函数生成的utc时间进行进一步解析 生成1970-01-01格式；
+      Date.prototype.format = function() {
+        var s = '';
+        var mouth = (this.getMonth() + 1) >= 10 ? (this.getMonth() + 1) : ('0' + (this.getMonth() + 1));
+        var day = this.getDate() >= 10 ? this.getDate() : ('0' + this.getDate());
+        s += this.getFullYear() + '-'; // 获取年份。
+        s += mouth + "-"; // 获取月份。
+        s += day; // 获取日。
+        return (s); // 返回日期。
+      };
+      //getAll 先将egin和end日期变为毫秒数；通过new Date(int)变为UTC时间；
+      function getAll(begin, end) {
+        var arr = [];
+        var ab = begin.split("-");
+        var ae = end.split("-");
+        var db = new Date();
+        db.setUTCFullYear(ab[0], ab[1] - 1, ab[2]);
+        var de = new Date();
+        de.setUTCFullYear(ae[0], ae[1] - 1, ae[2]);
+        var unixDb = db.getTime() - 24 * 60 * 60 * 1000;
+        var unixDe = de.getTime() - 24 * 60 * 60 * 1000;
+        for (var k = unixDb; k <= unixDe;) {
+          k = k + 24 * 60 * 60 * 1000;
+          arr.push((new Date(parseInt(k))).format());
+        }
+        return arr;
+      }
+
+      createOp((getAll('2018-12-20', endDate)));
+    }
+    var strOp = "";
+    //创建html select option 列出各个时间段；
+    function createOp(val) {
+      var selects = document.getElementById("MySelects");
+      strOp += "<option value = ''>---Please choose Date---</option>"
+      for (var i = 0; i < val.length; i++) {
+        strOp += "<option value = \"" + val[i] + "\">" + val[i] + "</option>";
+        selects.innerHTML = strOp;
+      }
+    }
+    //select索引
+    function displayResult() {
+      var x = document.getElementById("MySelects").selectedIndex;
+      var y = document.getElementById("MySelects").options;
+      loadXMLDoc(y[x].text);
+    }
+    //load ajax method get
+    function loadXMLDoc(dates) {
+      // var url = "https://2g5p8jx5q5.execute-api.ap-southeast-1.amazonaws.com/default/vaas-am730-cf-report?date=" + dates;
+      var url = "jsonn/2019-01-15";
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          var dataobj = JSON.parse(xmlhttp.responseText);
+          //进行排序
+          dataobj.sort(function(a, b) {
+            return b.played_num - a.played_num;
+          })
+          //创建数据表格
+          var str = "";
+          str += "<table border=\"1\"><tr>";
+          str += "<th>Video name</th><th>DATE</th><th>Played Time</th><th>Played Num</th><th>OSX Desktop</th><th>IOS</th><th>Linux Desktop</th><th>Window Desktop</th><th>Android</th><th>Bot</th>";
+          for (var i = 0; i < dataobj.length; i++) {
+            str += "</tr><tr><td>" + dataobj[i].uri + "</td>";
+            str += "<td>" + dataobj[i].date + "</td>";
+            str += "<td>" + dataobj[i].played_sec + "</td>";
+            str += "<td>" + dataobj[i].played_num + "</td>";
+            if (dataobj[i].ua_OSX_Desktop == undefined) {
+              dataobj[i].ua_OSX_Desktop = 0;
+            }
+            str += "<td>" + dataobj[i].ua_OSX_Desktop + "</td>";
+            if (dataobj[i].ua_iOS == undefined) {
+              dataobj[i].ua_iOS = 0;
+            }
+            str += "<td>" + dataobj[i].ua_iOS + "</td>";
+            if (dataobj[i].ua_Linux_Desktop == undefined) {
+              dataobj[i].ua_Linux_Desktop = 0;
+            }
+            str += "<td>" + dataobj[i].ua_Linux_Desktop + "</td>";
+            if (dataobj[i].ua_Windows_Desktop == undefined) {
+              dataobj[i].ua_Windows_Desktop = 0;
+            }
+            str += "<td>" + dataobj[i].ua_Windows_Desktop + "</td>";
+            if (dataobj[i].ua_Android == undefined) {
+              dataobj[i].ua_Android = 0;
+            }
+            str += "<td>" + dataobj[i].ua_Android + "</td>";
+            if (dataobj[i].ua_bot == undefined) {
+              dataobj[i].ua_bot = 0;
+            }
+            str += "<td>" + dataobj[i].ua_bot + "</td></tr>";
+          }
+          str += "</table>";
+          document.getElementById("myDiv").innerHTML = str;
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.setRequestHeader("x-api-key", "S7VhXUVH6U1Cy2OH6H2h37rAyA47I2V39inel5Rw");
+      xmlhttp.send();
+    }
+    //show info total
+    function displayInfo() {
+      var divobj = document.getElementById("myDiv");
+      var trobj = document.getElementsByTagName("tr");
+      var ua_OSX_Desktop_sum = 0,
+        ua_bot_sum = 0,
+        played_sec_sum = 0,
+        ua_Linux_Desktop_sum = 0,
+        played_num_sum = 0,
+        ua_iOS_sum = 0,
+        ua_Windows_Desktop_sum = 0,
+        ua_Android_sum = 0;
+      //循环计算各项的值
+      for (var i = 1; i < trobj.length; i++) {
+        ua_OSX_Desktop_sum += parseInt(trobj[i].childNodes[4].innerHTML);
+        ua_bot_sum += parseInt(trobj[i].childNodes[9].innerHTML);
+        played_sec_sum += parseInt(trobj[i].childNodes[2].innerHTML);
+        ua_Linux_Desktop_sum += parseInt(trobj[i].childNodes[6].innerHTML);
+        played_num_sum += parseInt(trobj[i].childNodes[3].innerHTML);
+        ua_iOS_sum += parseInt(trobj[i].childNodes[5].innerHTML);
+        ua_Windows_Desktop_sum += parseInt(trobj[i].childNodes[7].innerHTML);
+        ua_Android_sum += parseInt(trobj[i].childNodes[8].innerHTML);
+      }
+      divobj.innerHTML = "<table border=\"1\">" +
+        "<caption><h2>" + trobj[1].childNodes[1].innerHTML + "</h2></caption>" +
+        "<tr><th>Played Time Total</th><th>Played Num Total</th><th>OSX Desktop Total</th><th>IOS Total</th><th>Linux Desktop Total</th><th>Window Desktop Total</th><th>Android Total</th><th>Bot Total</th></tr>" +
+        "<tr><td>" + played_sec_sum + "</td><td>" + played_num_sum + "</td><td>" + ua_OSX_Desktop_sum + "</td><td>" + ua_iOS_sum + "</td><td>" + ua_Linux_Desktop_sum + "</td><td>" + ua_Windows_Desktop_sum + "</td><td>" + ua_Android_sum + "</td><td>" +
+        ua_bot_sum + "</td></tr></table>";
+
+    }
+  </script>
+</head>
+
+<body onload="loadDate()">
+  <div id="options">
+    <select id="MySelects">
+
+    </select>
+    <button type="button" onclick="displayResult()">显示详细信息</button>
+    <button type="button" onclick="displayInfo()">详细信息汇总</button>
+  </div>
+  <div id="myDiv"></div>
+</body>
+
+</html>

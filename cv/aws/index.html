@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript">
+    //var url = "https://hzl57loa14.execute-api.ap-southeast-1.amazonaws.com/prod/vaas-am730";
+    var url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxd31af94c969e86b0&secret=a044810bb5514a5ca70cb7d4c37d445d";
+
+    var xmlhttp;
+    if (window.XMLHttpRequest) {
+      xmlhttp = new XMLHttpRequest();
+    } else {
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var dataobj = JSON.parse(xmlhttp.responseText);
+        document.getElementById('contentDiv').innerHTML = dataobj;
+      }
+    }
+    xmlhttp.open("GET", url, true);
+    // xmlhttp.setRequestHeader("access_token", "18_XZsiUfnFFOLQdGHY8OsrTvybg8kAZasBf8rv_7UPwniQ7u-yHh2CO1wCYbS64lE8Kx7kehkhJLc6cTIxgCZqaOw2LnBupH0TkxpqK9ojC-xczIZrwtnuQARLAxDCr3LmJSL8j9UJGZW5uMeVERBdACAOBL");
+
+    xmlhttp.send();
+  </script>
+  <style type="text/css">
+    table td {
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="contentDiv"></div>
+</body>
+
+</html>

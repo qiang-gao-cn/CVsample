@@ -1,0 +1,33 @@
+
+turn ui:  upload s3:
+job:
+add title for job
+
+jobsubmit:
+input 多个行
+2：4 长方形
+最下add  del
+
+ajax get running job
+
+
+profile:
+同job同样式
+
+callback：同profile一页
+显示内容；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+<a onclick="pageScroll()">返回<br />顶部</a>
+
+    function pageScroll(){
+        window.scrollBy(0,-100);
+        scrolldelay = setTimeout('pageScroll()',100);
+        var sTop=document.documentElement.scrollTop+document.body.scrollTop;
+        if(sTop==0) clearTimeout(scrolldelay);
+    }
+
+
+    <a href="javascript:scroll(0,0)" style="text-decoration:none;">返回<br />顶部</a>
